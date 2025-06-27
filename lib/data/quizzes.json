@@ -1,0 +1,74 @@
+{
+  "quizzes": [
+    {
+      "id": "anxiety-assessment",
+      "title": "Anxiety Assessment Quiz",
+      "questions": 15,
+      "isAvailable": true,
+      "description": "Evaluate your anxiety levels and understand common anxiety symptoms through this comprehensive assessment."
+    },
+    {
+      "id": "stress-management",
+      "title": "Stress Management Evaluation",
+      "questions": 20,
+      "isAvailable": true,
+      "description": "Assess your stress levels and discover your current stress management capabilities and areas for improvement."
+    },
+    {
+      "id": "emotional-intelligence",
+      "title": "Emotional Intelligence Test",
+      "questions": 25,
+      "isAvailable": true,
+      "description": "Measure your emotional intelligence quotient (EQ) and understand your emotional awareness and management skills."
+    },
+    {
+      "id": "depression-screening",
+      "title": "Depression Screening Assessment",
+      "questions": 15,
+      "isAvailable": true,
+      "description": "A preliminary screening tool to help identify potential signs and symptoms of depression."
+    },
+    {
+      "id": "personality-traits",
+      "title": "Personality Traits Analysis",
+      "questions": 30,
+      "isAvailable": true,
+      "description": "Explore your personality traits and understand how they influence your behavior and relationships."
+    },
+    {
+      "id": "cognitive-patterns",
+      "title": "Cognitive Patterns Assessment",
+      "questions": 20,
+      "isAvailable": false,
+      "description": "Identify your thinking patterns and cognitive tendencies that influence decision-making and problem-solving."
+    },
+    {
+      "id": "relationship-dynamics",
+      "title": "Relationship Dynamics Quiz",
+      "questions": 25,
+      "isAvailable": false,
+      "description": "Evaluate your relationship patterns, attachment style, and interpersonal communication tendencies."
+    },
+    {
+      "id": "work-life-balance",
+      "title": "Work-Life Balance Assessment",
+      "questions": 18,
+      "isAvailable": false,
+      "description": "Assess how well you maintain balance between your professional and personal life, identifying areas of stress and potential improvements."
+    },
+    {
+      "id": "self-esteem",
+      "title": "Self-Esteem Evaluation",
+      "questions": 22,
+      "isAvailable": false,
+      "description": "Measure your self-esteem levels and understand factors affecting your self-worth and confidence."
+    },
+    {
+      "id": "stress-resilience",
+      "title": "Stress Resilience Index",
+      "questions": 20,
+      "isAvailable": false,
+      "description": "Evaluate your ability to cope with stress and bounce back from challenging situations."
+    }
+  ]
+}
