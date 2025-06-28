@@ -1,0 +1,84 @@
+{
+    "quizzes": [
+        {
+            "questionNumber": 1,
+            "questionContent": "Apakah Anda sering merasa sakit kepala?"
+        },
+        {
+            "questionNumber": 2,
+            "questionContent": "Apakah Anda kehilangan nafsu makan?"
+        },
+        {
+            "questionNumber": 3,
+            "questionContent": "Apakah tidur Anda tidak nyenyak?"
+        },
+        {
+            "questionNumber": 4,
+            "questionContent": "Apakah Anda mudah merasa takut?"
+        },
+        {
+            "questionNumber": 5,
+            "questionContent": "Apakah Anda merasa cemas, tegang, atau khawatir?"
+        },
+        {
+            "questionNumber": 6,
+            "questionContent": "Apakah tangan Anda gemetar?"
+        },
+        {
+            "questionNumber": 7,
+            "questionContent": "Apakah Anda mengalami gangguan pencernaan?"
+        },
+        {
+            "questionNumber": 8,
+            "questionContent": "Apakah Anda merasa sulit berpikir jernih?"
+        },
+        {
+            "questionNumber": 9,
+            "questionContent": "Apakah Anda merasa tidak bahagia?"
+        },
+        {
+            "questionNumber": 10,
+            "questionContent": "Apakah Anda lebih sering menangis?"
+        },
+        {
+            "questionNumber": 11,
+            "questionContent": "Apakah Anda merasa sulit untuk menikmati aktivitas sehari-hari?"
+        },
+        {
+            "questionNumber": 12,
+            "questionContent": "Apakah Anda mengalami kesulitan untuk mengambil keputusan?"
+        },
+        {
+            "questionNumber": 13,
+            "questionContent": "Apakah aktivitas/tugas sehari-hari Anda terbengkalai?"
+        },
+        {
+            "questionNumber": 14,
+            "questionContent": "Apakah Anda merasa tidak mampu berperan dalam kehidupan ini?"
+        },
+        {
+            "questionNumber": 15,
+            "questionContent": "Apakah Anda kehilangan minat terhadap banyak hal?"
+        },
+        {
+            "questionNumber": 16,
+            "questionContent": "Apakah Anda merasa tidak berharga?"
+        },
+        {
+            "questionNumber": 17,
+            "questionContent": "Apakah Anda mempunyai pikiran untuk mengakhiri hidup Anda?"
+        },
+        {
+            "questionNumber": 18,
+            "questionContent": "Apakah Anda merasa lelah sepanjang waktu?"
+        },
+        {
+            "questionNumber": 19,
+            "questionContent": "Apakah Anda merasa tidak enak di perut?"
+        },
+        {
+            "questionNumber": 20,
+            "questionContent": "Apakah Anda mudah lelah?"
+        }
+    ]
+}

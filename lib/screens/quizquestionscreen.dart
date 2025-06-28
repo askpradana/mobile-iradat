@@ -1,11 +1,18 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quiz_iradat/screens/quizresultscreen.dart';
 
 class QuizQuestion {
-  final String question;
+  final int questionId;
+  final String questionContent;
   bool? userAnswer;
 
-  QuizQuestion({required this.question, this.userAnswer});
+  QuizQuestion({
+    required this.questionId,
+    required this.questionContent,
+    this.userAnswer,
+  });
 }
 
 class QuizPage extends StatefulWidget {
@@ -22,67 +29,36 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   int currentQuestionIndex = 0;
   late AnimationController _slideController;
   late Animation<Offset> _slideAnimation;
+  List<QuizQuestion> questions = []; // Initialize as empty list instead of late
+  bool isLoading = true; // Add loading state
 
-  final List<QuizQuestion> questions = [
-    QuizQuestion(
-      question: "Do you prefer spending time alone rather than with others?",
-    ),
-    QuizQuestion(
-      question: "Do you often feel energized after social gatherings?",
-    ),
-    QuizQuestion(
-      question: "Do you find it easy to start conversations with strangers?",
-    ),
-    QuizQuestion(
-      question:
-          "Do you prefer to plan things in advance rather than being spontaneous?",
-    ),
-    QuizQuestion(
-      question: "Do you often worry about things that might go wrong?",
-    ),
-    QuizQuestion(
-      question: "Do you enjoy taking risks and trying new experiences?",
-    ),
-    QuizQuestion(
-      question: "Do you tend to focus on details rather than the big picture?",
-    ),
-    QuizQuestion(
-      question: "Do you make decisions based on logic rather than emotions?",
-    ),
-    QuizQuestion(
-      question: "Do you prefer working in a team rather than independently?",
-    ),
-    QuizQuestion(
-      question: "Do you often think about the future rather than the present?",
-    ),
-    QuizQuestion(
-      question: "Do you find it difficult to express your emotions?",
-    ),
-    QuizQuestion(
-      question: "Do you prefer routine and predictability over change?",
-    ),
-    QuizQuestion(
-      question: "Do you often feel overwhelmed by too many choices?",
-    ),
-    QuizQuestion(question: "Do you enjoy being the center of attention?"),
-    QuizQuestion(question: "Do you tend to be optimistic about outcomes?"),
-    QuizQuestion(
-      question: "Do you prefer to finish one task before starting another?",
-    ),
-    QuizQuestion(
-      question: "Do you often analyze situations before taking action?",
-    ),
-    QuizQuestion(
-      question:
-          "Do you feel comfortable sharing personal information with others?",
-    ),
-    QuizQuestion(
-      question: "Do you prefer competitive activities over collaborative ones?",
-    ),
-    QuizQuestion(
-      question: "Do you often seek advice from others before making decisions?",
-    ),
-  ];
+  Future<void> loadQuestions() async {
+    try {
+      final String jsonContent = await rootBundle.loadString(
+        'lib/data/srq20.json',
+      );
+      final Map<String, dynamic> jsonData = json.decode(jsonContent);
+      final List<dynamic> questionsData = jsonData['quizzes'];
+
+      setState(() {
+        questions =
+            questionsData
+                .map(
+                  (question) => QuizQuestion(
+                    questionId: question['questionNumber'],
+                    questionContent: question['questionContent'],
+                  ),
+                )
+                .toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading questions: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -97,7 +73,13 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     ).animate(
       CurvedAnimation(parent: _slideController, curve: Curves.easeInOut),
     );
-    _slideController.forward();
+
+    // Load questions first, then start animation
+    loadQuestions().then((_) {
+      if (questions.isNotEmpty) {
+        _slideController.forward();
+      }
+    });
   }
 
   @override
@@ -107,6 +89,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }
 
   void _selectAnswer(bool answer) {
+    if (questions.isEmpty) return;
+
     setState(() {
       questions[currentQuestionIndex].userAnswer = answer;
     });
@@ -124,6 +108,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }
 
   void _submitQuiz() {
+    if (questions.isEmpty) return;
+
     // Calculate statistics
     int yesCount = 0;
     int noCount = 0;
@@ -152,11 +138,105 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     );
   }
 
-  bool get _isLastQuestion => currentQuestionIndex == questions.length - 1;
-  bool get _canProceed => questions[currentQuestionIndex].userAnswer != null;
+  bool get _isLastQuestion =>
+      questions.isNotEmpty && currentQuestionIndex == questions.length - 1;
+  bool get _canProceed =>
+      questions.isNotEmpty &&
+      questions[currentQuestionIndex].userAnswer != null;
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.grey[50],
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black87),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Text(
+            widget.quizTitle,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Loading questions...',
+                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (questions.isEmpty) {
+      return Scaffold(
+        backgroundColor: Colors.grey[50],
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black87),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Text(
+            widget.quizTitle,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
+              SizedBox(height: 16),
+              Text(
+                'Failed to load questions',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[700],
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Please try again',
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              ),
+              SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  loadQuestions();
+                },
+                child: Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final currentQuestion = questions[currentQuestionIndex];
     final progress = (currentQuestionIndex + 1) / questions.length;
 
@@ -262,7 +342,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
                         // Question Text
                         Text(
-                          currentQuestion.question,
+                          currentQuestion.questionContent,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,

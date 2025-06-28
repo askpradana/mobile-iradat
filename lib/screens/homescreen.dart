@@ -87,7 +87,10 @@ class _HomescreenState extends State<Homescreen> {
             itemCount: _quizzes.length,
             itemBuilder: (context, index) {
               final quiz = _quizzes[index];
+              final quizId = quiz['id'] as String;
               final isAvailable = quiz['isAvailable'] as bool;
+              final totalQuestions = quiz['questions'] as int;
+              final timeLimit = quiz['timeLimit'] as int;
               return Container(
                 margin: const EdgeInsets.only(bottom: 12),
                 child: Card(
@@ -106,7 +109,9 @@ class _HomescreenState extends State<Homescreen> {
                                   builder:
                                       (context) => QuizScreen(
                                         quizTitle: quiz['title'] as String,
-                                        quizId: (index + 1).toString(),
+                                        quizId: quizId,
+                                        totalQuestions: totalQuestions,
+                                        timeLimit: timeLimit,
                                         quizDescription:
                                             quiz['description'] as String,
                                       ),

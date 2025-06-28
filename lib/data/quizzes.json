@@ -1,17 +1,19 @@
 {
   "quizzes": [
     {
-      "id": "anxiety-assessment",
-      "title": "Anxiety Assessment Quiz",
-      "questions": 15,
+      "id": "self-reporting-questionnaire-20",
+      "title": "Self-Reporting Questionnaire-20",
+      "questions": 20,
       "isAvailable": true,
-      "description": "Evaluate your anxiety levels and understand common anxiety symptoms through this comprehensive assessment."
+      "timeLimit": 10,
+      "description": "Bacalah petunjuk ini seluruhnya sebelum mulai mengisi. Pertanyaan berikut berhubungan dengan masalah yang mungkin mengganggu Anda selama 30 hari terakhir. Apabila Anda menganggap pertanyaan itu Anda alami dalam 30 hari terakhir, berilah tanda silang (X) pada kolom Y (berarti Ya). Sebaliknya, Apabila Anda menganggap pertanyaan itu tidak Anda alami dalam 30 hari terakhir, berilah tanda silang (X) pada kolom T (Tidak). Jika Anda tidak yakin tentang jawabannya, berilah jawaban yang paling sesuai di antara Y dan T. Kami tegaskan bahwa jawaban Anda bersifat rahasia dan akan digunakan hanya untuk membantu pemecahan masalah Anda."
     },
     {
       "id": "stress-management",
       "title": "Stress Management Evaluation",
       "questions": 20,
       "isAvailable": true,
+      "timeLimit": 30,
       "description": "Assess your stress levels and discover your current stress management capabilities and areas for improvement."
     },
     {
@@ -19,6 +21,7 @@
       "title": "Emotional Intelligence Test",
       "questions": 25,
       "isAvailable": true,
+      "timeLimit": 30,
       "description": "Measure your emotional intelligence quotient (EQ) and understand your emotional awareness and management skills."
     },
     {
@@ -26,6 +29,7 @@
       "title": "Depression Screening Assessment",
       "questions": 15,
       "isAvailable": true,
+      "timeLimit": 30,
       "description": "A preliminary screening tool to help identify potential signs and symptoms of depression."
     },
     {
@@ -33,6 +37,7 @@
       "title": "Personality Traits Analysis",
       "questions": 30,
       "isAvailable": true,
+      "timeLimit": 30,
       "description": "Explore your personality traits and understand how they influence your behavior and relationships."
     },
     {
@@ -40,6 +45,7 @@
       "title": "Cognitive Patterns Assessment",
       "questions": 20,
       "isAvailable": false,
+      "timeLimit": 30,
       "description": "Identify your thinking patterns and cognitive tendencies that influence decision-making and problem-solving."
     },
     {
@@ -47,6 +53,7 @@
       "title": "Relationship Dynamics Quiz",
       "questions": 25,
       "isAvailable": false,
+      "timeLimit": 30,
       "description": "Evaluate your relationship patterns, attachment style, and interpersonal communication tendencies."
     },
     {
@@ -54,6 +61,7 @@
       "title": "Work-Life Balance Assessment",
       "questions": 18,
       "isAvailable": false,
+      "timeLimit": 30,
       "description": "Assess how well you maintain balance between your professional and personal life, identifying areas of stress and potential improvements."
     },
     {
@@ -61,6 +69,7 @@
       "title": "Self-Esteem Evaluation",
       "questions": 22,
       "isAvailable": false,
+      "timeLimit": 30,
       "description": "Measure your self-esteem levels and understand factors affecting your self-worth and confidence."
     },
     {
@@ -68,6 +77,7 @@
       "title": "Stress Resilience Index",
       "questions": 20,
       "isAvailable": false,
+      "timeLimit": 30,
       "description": "Evaluate your ability to cope with stress and bounce back from challenging situations."
     }
   ]

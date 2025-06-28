@@ -40,7 +40,7 @@ class QuizScreen extends StatelessWidget {
             children: [
               // Quiz ID
               Text(
-                "Quiz #$quizId",
+                "#$quizId",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey[600],
@@ -64,25 +64,16 @@ class QuizScreen extends StatelessWidget {
                   Expanded(
                     child: _buildInfoCard(
                       icon: Icons.timer,
-                      title: "Time",
+                      title: "estimated time",
                       value: "${timeLimit}min",
                       color: Colors.orange,
                     ),
                   ),
-                  // SizedBox(width: 12),
-                  // Expanded(
-                  //   child: _buildInfoCard(
-                  //     icon: Icons.trending_up,
-                  //     title: "Level",
-                  //     value: difficulty,
-                  //     color: Colors.green,
-                  //   ),
-                  // ),
                 ],
               ),
               SizedBox(height: 32),
 
-              // Description
+              // Description Title
               Text(
                 "Description",
                 style: TextStyle(
@@ -92,32 +83,38 @@ class QuizScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 10,
-                      offset: Offset(0, 2),
+
+              // Scrollable Description Container
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      quizDescription,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[700],
+                        height: 1.6,
+                      ),
                     ),
-                  ],
-                ),
-                child: Text(
-                  quizDescription,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey[700],
-                    height: 1.6,
                   ),
                 ),
               ),
 
-              Spacer(),
+              SizedBox(height: 24),
 
               // Instructions
               Container(
