@@ -43,22 +43,32 @@ class _SliderQuizState extends State<SliderQuiz> {
     }
   }
 
-  Color _getSliderColor(double value) {
-    // 0 = green, 5 = yellow, 10 = red
-    if (value <= 5) {
-      // Green to Yellow
-      double t = value / 5.0;
-      return Color.lerp(Colors.red, Colors.yellow, t)!;
-    } else {
-      // Yellow to Red
-      double t = (value - 5) / 5.0;
-      return Color.lerp(Colors.yellow, Colors.green, t)!;
-    }
+  // Option 1: Blue gradient to match your app theme
+  Color _getSliderColorBlue(double value) {
+    double t = value / 10.0;
+    return Color.lerp(
+      const Color(0xFFE3F2FD), // Very light blue (matches your app)
+      const Color(0xFF1976D2), // Deep blue (matches your progress bar)
+      t,
+    )!;
+  }
+
+  // Option 2: Keep gray but make it warmer to match better
+  Color _getSliderColorWarmGray(double value) {
+    double t = value / 10.0;
+    return Color.lerp(
+      const Color(0xFFF5F5F5), // Warmer light gray
+      const Color(0xFF424242), // Softer dark gray
+      t,
+    )!;
   }
 
   @override
   Widget build(BuildContext context) {
-    final Color dynamicColor = _getSliderColor(_value);
+    final Color dynamicColor = _getSliderColorBlue(
+      _value,
+    ); // Change this to try different options
+
     return Column(
       children: [
         SfSliderTheme(
@@ -68,7 +78,7 @@ class _SliderQuizState extends State<SliderQuiz> {
             thumbRadius: 16,
             thumbColor: dynamicColor,
             activeTrackColor: dynamicColor,
-            inactiveTrackColor: Colors.grey[300],
+            inactiveTrackColor: Colors.grey[200], // Lighter inactive track
             overlayColor: dynamicColor.withValues(alpha: .12),
             tooltipBackgroundColor: dynamicColor,
           ),
@@ -101,19 +111,25 @@ class _SliderQuizState extends State<SliderQuiz> {
         const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Padding(
+          children: [
+            const Padding(
               padding: EdgeInsets.only(left: 0),
               child: Text(
                 'Sangat Tidak Setuju',
-                style: TextStyle(fontSize: 12, color: Colors.red),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ), // Changed from red to neutral
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(right: 0),
               child: Text(
                 'Sangat Setuju',
-                style: TextStyle(fontSize: 12, color: Colors.green),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ), // Changed from green to neutral
               ),
             ),
           ],
@@ -122,16 +138,20 @@ class _SliderQuizState extends State<SliderQuiz> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.green[50],
+            color: dynamicColor.withValues(
+              alpha: 0.1,
+            ), // Use dynamic color with low opacity
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.green[200]!),
+            border: Border.all(
+              color: dynamicColor.withValues(alpha: 0.3),
+            ), // Dynamic border
           ),
           child: Text(
             'Current Value: ${_value.toStringAsFixed(0)}',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.green[700],
+              color: dynamicColor, // Dynamic text color
             ),
           ),
         ),
@@ -176,7 +196,7 @@ class _SyncFunctionTrackShape extends SfTrackShape {
         Radius.circular(4),
       ),
       activePaint ?? Paint()
-        ..color = themeData.activeTrackColor ?? Colors.green,
+        ..color = themeData.activeTrackColor ?? Colors.blue,
     );
     // Draw inactive track (right of thumb)
     context.canvas.drawRRect(
@@ -190,7 +210,7 @@ class _SyncFunctionTrackShape extends SfTrackShape {
         Radius.circular(4),
       ),
       inactivePaint ?? Paint()
-        ..color = themeData.inactiveTrackColor ?? Colors.red,
+        ..color = themeData.inactiveTrackColor ?? Colors.grey[200]!,
     );
   }
 }
