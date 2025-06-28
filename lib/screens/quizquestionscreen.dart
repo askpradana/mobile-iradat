@@ -54,7 +54,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         isLoading = false;
       });
     } catch (e) {
-      print('Error loading questions: $e');
       setState(() {
         isLoading = false;
       });
@@ -98,8 +97,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }
 
   void _nextQuestion() {
-    if (questions.isEmpty || currentQuestionIndex >= questions.length - 1)
+    if (questions.isEmpty || currentQuestionIndex >= questions.length - 1) {
       return;
+    }
 
     _slideController.reset();
     setState(() {
@@ -110,20 +110,10 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     _slideController.forward();
   }
 
-  void _previousQuestion() {
-    if (questions.isEmpty || currentQuestionIndex <= 0) return;
-
-    _slideController.reset();
-    setState(() {
-      currentQuestionIndex--;
-      // Don't modify the userAnswer here - let it keep its existing value
-      // (null if unanswered, true/false if previously answered)
-    });
-    _slideController.forward();
-  }
-
   void _submitQuiz() {
-    if (questions.isEmpty) return;
+    if (questions.isEmpty) {
+      return;
+    }
 
     // Calculate statistics
     int yesCount = 0;
@@ -159,7 +149,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       questions.isNotEmpty &&
       currentQuestionIndex < questions.length &&
       questions[currentQuestionIndex].userAnswer != null;
-  bool get _canGoBack => questions.isNotEmpty && currentQuestionIndex > 0;
 
   @override
   Widget build(BuildContext context) {
@@ -376,80 +365,56 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                           onChanged: _selectAnswer,
                           initialValue: currentQuestion.userAnswer,
                         ),
-                        // Navigation Buttons
-                        SizedBox(height: 32),
-                        Row(
-                          children: [
-                            if (_canGoBack)
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: _previousQuestion,
-                                  style: OutlinedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.arrow_back, size: 20),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        "Previous",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            if (_canGoBack) SizedBox(width: 16),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed:
-                                    _canProceed
-                                        ? (_isLastQuestion
-                                            ? _submitQuiz
-                                            : _nextQuestion)
-                                        : null,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue[600],
-                                  foregroundColor: Colors.white,
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      _isLastQuestion ? "Submit Quiz" : "Next",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Icon(
-                                      _isLastQuestion
-                                          ? Icons.check
-                                          : Icons.arrow_forward,
-                                      size: 20,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+
+                        // Answer Status Indicator
+                        SizedBox(height: 20),
                       ],
                     ),
                   ),
                 ),
+              ),
+            ),
+
+            // Navigation Buttons
+            Container(
+              margin: EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  // Next/Submit Button
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed:
+                          _canProceed
+                              ? (_isLastQuestion ? _submitQuiz : _nextQuestion)
+                              : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[600],
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _isLastQuestion ? "Submit Quiz" : "Next",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Icon(
+                            _isLastQuestion ? Icons.check : Icons.arrow_forward,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

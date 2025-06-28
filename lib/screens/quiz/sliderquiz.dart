@@ -33,7 +33,32 @@ class _SliderQuizState extends State<SliderQuiz> {
   }
 
   @override
+  void didUpdateWidget(SliderQuiz oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update the slider value when initialValue changes
+    if (widget.initialValue != oldWidget.initialValue) {
+      setState(() {
+        _value = widget.initialValue;
+      });
+    }
+  }
+
+  Color _getSliderColor(double value) {
+    // 0 = green, 5 = yellow, 10 = red
+    if (value <= 5) {
+      // Green to Yellow
+      double t = value / 5.0;
+      return Color.lerp(Colors.red, Colors.yellow, t)!;
+    } else {
+      // Yellow to Red
+      double t = (value - 5) / 5.0;
+      return Color.lerp(Colors.yellow, Colors.green, t)!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final Color dynamicColor = _getSliderColor(_value);
     return Column(
       children: [
         SfSliderTheme(
@@ -41,11 +66,11 @@ class _SliderQuizState extends State<SliderQuiz> {
             activeTrackHeight: 8,
             inactiveTrackHeight: 8,
             thumbRadius: 16,
-            thumbColor: Colors.green[600],
-            activeTrackColor: Colors.green[400],
-            inactiveTrackColor: Colors.red[200],
-            overlayColor: Colors.green.withOpacity(0.12),
-            tooltipBackgroundColor: Colors.green[600],
+            thumbColor: dynamicColor,
+            activeTrackColor: dynamicColor,
+            inactiveTrackColor: Colors.grey[300],
+            overlayColor: dynamicColor.withValues(alpha: .12),
+            tooltipBackgroundColor: dynamicColor,
           ),
           child: SfSlider(
             min: 0.0,

@@ -58,7 +58,6 @@ class _SliderQuizPageState extends State<SliderQuizPage>
         isLoading = false;
       });
     } catch (e) {
-      print('Error loading questions: $e');
       setState(() {
         isLoading = false;
       });
@@ -101,34 +100,22 @@ class _SliderQuizPageState extends State<SliderQuizPage>
   }
 
   void _nextQuestion() {
-    if (questions.isEmpty || currentQuestionIndex >= questions.length - 1)
+    if (questions.isEmpty || currentQuestionIndex >= questions.length - 1) {
       return;
+    }
     _slideController.reset();
     setState(() {
       currentQuestionIndex++;
-      // Reset answer if not answered yet
-      if (questions[currentQuestionIndex].userAnswer == null) {
-        questions[currentQuestionIndex].userAnswer = null;
-      }
-    });
-    _slideController.forward();
-  }
-
-  void _previousQuestion() {
-    if (questions.isEmpty || currentQuestionIndex <= 0) return;
-    _slideController.reset();
-    setState(() {
-      currentQuestionIndex--;
-      // Reset answer if not answered yet
-      if (questions[currentQuestionIndex].userAnswer == null) {
-        questions[currentQuestionIndex].userAnswer = null;
-      }
+      // Reset answer to 0 for new questions
+      questions[currentQuestionIndex].userAnswer = 0;
     });
     _slideController.forward();
   }
 
   void _submitQuiz() {
-    if (questions.isEmpty) return;
+    if (questions.isEmpty) {
+      return;
+    }
 
     // Calculate statistics for slider quiz
     double totalScore = 0;
@@ -166,7 +153,6 @@ class _SliderQuizPageState extends State<SliderQuizPage>
       questions.isNotEmpty &&
       currentQuestionIndex < questions.length &&
       questions[currentQuestionIndex].userAnswer != null;
-  bool get _canGoBack => questions.isNotEmpty && currentQuestionIndex > 0;
 
   @override
   Widget build(BuildContext context) {
@@ -398,36 +384,6 @@ class _SliderQuizPageState extends State<SliderQuizPage>
               margin: EdgeInsets.all(20),
               child: Row(
                 children: [
-                  // Previous Button
-                  if (_canGoBack)
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: _previousQuestion,
-                        style: OutlinedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.arrow_back, size: 20),
-                            SizedBox(width: 8),
-                            Text(
-                              "Previous",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                  if (_canGoBack) SizedBox(width: 16),
-
                   // Next/Submit Button
                   Expanded(
                     child: ElevatedButton(
@@ -567,7 +523,7 @@ class SliderQuizResultsPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
+                      color: Colors.grey.withValues(alpha: 0.1),
                       spreadRadius: 1,
                       blurRadius: 10,
                       offset: Offset(0, 2),
@@ -625,7 +581,7 @@ class SliderQuizResultsPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
+                      color: Colors.grey.withValues(alpha: 0.1),
                       spreadRadius: 1,
                       blurRadius: 10,
                       offset: Offset(0, 2),
@@ -723,7 +679,7 @@ class SliderQuizResultsPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 10,
             offset: Offset(0, 2),
@@ -735,7 +691,7 @@ class SliderQuizResultsPage extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 24),
