@@ -43,31 +43,14 @@ class _SliderQuizState extends State<SliderQuiz> {
     }
   }
 
-  // Option 1: Blue gradient to match your app theme
   Color _getSliderColorBlue(double value) {
     double t = value / 10.0;
-    return Color.lerp(
-      const Color(0xFFE3F2FD), // Very light blue (matches your app)
-      const Color(0xFF1976D2), // Deep blue (matches your progress bar)
-      t,
-    )!;
-  }
-
-  // Option 2: Keep gray but make it warmer to match better
-  Color _getSliderColorWarmGray(double value) {
-    double t = value / 10.0;
-    return Color.lerp(
-      const Color(0xFFF5F5F5), // Warmer light gray
-      const Color(0xFF424242), // Softer dark gray
-      t,
-    )!;
+    return Color.lerp(const Color(0xFFE3F2FD), const Color(0xFF1976D2), t)!;
   }
 
   @override
   Widget build(BuildContext context) {
-    final Color dynamicColor = _getSliderColorBlue(
-      _value,
-    ); // Change this to try different options
+    final Color dynamicColor = _getSliderColorBlue(_value);
 
     return Column(
       children: [
