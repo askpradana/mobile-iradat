@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_iradat/screens/quizquestionscreen.dart';
+import 'package:quiz_iradat/screens/sliderquizpage.dart';
 
 class QuizScreen extends StatelessWidget {
   final String quizId;
@@ -8,6 +9,7 @@ class QuizScreen extends StatelessWidget {
   final int totalQuestions;
   final int timeLimit; // in minutes
   final String difficulty;
+  final String quizType;
 
   const QuizScreen({
     super.key,
@@ -17,6 +19,7 @@ class QuizScreen extends StatelessWidget {
     this.totalQuestions = 10,
     this.timeLimit = 15,
     this.difficulty = 'Medium',
+    required this.quizType,
   });
 
   @override
@@ -249,13 +252,21 @@ class QuizScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                // Navigate to quiz page
+                // Navigate to appropriate quiz page based on quiz type
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder:
                         (context) =>
-                            QuizPage(quizTitle: quizTitle, quizId: quizId),
+                            quizType == 'slider'
+                                ? SliderQuizPage(
+                                  quizTitle: quizTitle,
+                                  quizId: quizId,
+                                )
+                                : QuizPage(
+                                  quizTitle: quizTitle,
+                                  quizId: quizId,
+                                ),
                   ),
                 );
               },

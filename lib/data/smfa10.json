@@ -1,0 +1,44 @@
+{
+    "quizzes": [
+        {
+            "questionNumber": 1,
+            "questionContent": "Di tempat kerja, saya tidak dapat mengeluarkan pikiran atau beban dalam dada saya"
+        },
+        {
+            "questionNumber": 2,
+            "questionContent": "Pekerjaan saya sangat menuntut tanggung jawab, tetapi kewenangan dan kekuasaan saya terbatas."
+        },
+        {
+            "questionNumber": 3,
+            "questionContent": "Saya biasanya dapat melakukan pekerjaan dengan lebih baik jika saya memiliki waktu yang lebih banyak."
+        },
+        {
+            "questionNumber": 4,
+            "questionContent": "Saya jarang menerima pengakuan atau penghargaan jika hasil kerja saya sangat baik."
+        },
+        {
+            "questionNumber": 5,
+            "questionContent": "Pada dasarnya, saya tidak terlalu bangga atau puas dengan pekerjaan saya"
+        },
+        {
+            "questionNumber": 6,
+            "questionContent": "Saya rasa, saya berulang kali terusik saat sedang bekerja"
+        },
+        {
+            "questionNumber": 7,
+            "questionContent": "Lingkungan kerja saya tidak terlalu menyenangkan atau aman."
+        },
+        {
+            "questionNumber": 8,
+            "questionContent": "Pekerjaan saya bertentangan dengan keluarga, kewajiban sosial, dan kebutuhan sosial saya."
+        },
+        {
+            "questionNumber": 9,
+            "questionContent": "Saya cenderung sering berbantahan/bertengkar dengan penyelia, rekan kerja, atau pelanggan saya."
+        },
+        {
+            "questionNumber": 10,
+            "questionContent": "Saya sering kali merasa hanya memiliki sedikit kendali terhadap hidup saya di tempat kerja"
+        }
+    ]
+}

@@ -114,6 +114,7 @@ class _HomescreenState extends State<Homescreen> {
                                         timeLimit: timeLimit,
                                         quizDescription:
                                             quiz['description'] as String,
+                                        quizType: quiz['quizType'] as String,
                                       ),
                                 ),
                               );

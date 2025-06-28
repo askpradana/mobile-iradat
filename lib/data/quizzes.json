@@ -6,38 +6,43 @@
       "questions": 20,
       "isAvailable": true,
       "timeLimit": 10,
+      "quizType": "yesno",
       "description": "Bacalah petunjuk ini seluruhnya sebelum mulai mengisi. Pertanyaan berikut berhubungan dengan masalah yang mungkin mengganggu Anda selama 30 hari terakhir. Apabila Anda menganggap pertanyaan itu Anda alami dalam 30 hari terakhir, berilah tanda silang (X) pada kolom Y (berarti Ya). Sebaliknya, Apabila Anda menganggap pertanyaan itu tidak Anda alami dalam 30 hari terakhir, berilah tanda silang (X) pada kolom T (Tidak). Jika Anda tidak yakin tentang jawabannya, berilah jawaban yang paling sesuai di antara Y dan T. Kami tegaskan bahwa jawaban Anda bersifat rahasia dan akan digunakan hanya untuk membantu pemecahan masalah Anda."
     },
     {
-      "id": "stress-management",
-      "title": "Stress Management Evaluation",
-      "questions": 20,
+      "id": "stress-management-self-assessment",
+      "title": "Stress Management Self Assessment",
+      "questions": 10,
       "isAvailable": true,
-      "timeLimit": 30,
-      "description": "Assess your stress levels and discover your current stress management capabilities and areas for improvement."
+      "timeLimit": 10,
+      "quizType": "slider",
+      "description": "Kuis personal berikut ini berasal dari American Institute of Stress dan dirancang untuk membantu Anda memutuskan derajat stres kerja Anda."
     },
     {
       "id": "emotional-intelligence",
       "title": "Emotional Intelligence Test",
       "questions": 25,
-      "isAvailable": true,
+      "isAvailable": false,
       "timeLimit": 30,
+      "quizType": "yesno",
       "description": "Measure your emotional intelligence quotient (EQ) and understand your emotional awareness and management skills."
     },
     {
       "id": "depression-screening",
       "title": "Depression Screening Assessment",
       "questions": 15,
-      "isAvailable": true,
+      "isAvailable": false,
       "timeLimit": 30,
+      "quizType": "yesno",
       "description": "A preliminary screening tool to help identify potential signs and symptoms of depression."
     },
     {
       "id": "personality-traits",
       "title": "Personality Traits Analysis",
       "questions": 30,
-      "isAvailable": true,
+      "isAvailable": false,
       "timeLimit": 30,
+      "quizType": "yesno",
       "description": "Explore your personality traits and understand how they influence your behavior and relationships."
     },
     {
@@ -46,6 +51,7 @@
       "questions": 20,
       "isAvailable": false,
       "timeLimit": 30,
+      "quizType": "yesno",
       "description": "Identify your thinking patterns and cognitive tendencies that influence decision-making and problem-solving."
     },
     {
@@ -54,6 +60,7 @@
       "questions": 25,
       "isAvailable": false,
       "timeLimit": 30,
+      "quizType": "yesno",
       "description": "Evaluate your relationship patterns, attachment style, and interpersonal communication tendencies."
     },
     {
@@ -62,6 +69,7 @@
       "questions": 18,
       "isAvailable": false,
       "timeLimit": 30,
+      "quizType": "yesno",
       "description": "Assess how well you maintain balance between your professional and personal life, identifying areas of stress and potential improvements."
     },
     {
@@ -70,6 +78,7 @@
       "questions": 22,
       "isAvailable": false,
       "timeLimit": 30,
+      "quizType": "yesno",
       "description": "Measure your self-esteem levels and understand factors affecting your self-worth and confidence."
     },
     {
@@ -78,6 +87,7 @@
       "questions": 20,
       "isAvailable": false,
       "timeLimit": 30,
+      "quizType": "yesno",
       "description": "Evaluate your ability to cope with stress and bounce back from challenging situations."
     }
   ]

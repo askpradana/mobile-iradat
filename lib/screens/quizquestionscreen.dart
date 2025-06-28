@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quiz_iradat/screens/quizresultscreen.dart';
+import 'package:quiz_iradat/screens/quiz/yesnoquiz.dart';
 
 class QuizQuestion {
   final int questionId;
@@ -94,17 +95,31 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     setState(() {
       questions[currentQuestionIndex].userAnswer = answer;
     });
+  }
 
-    // Auto proceed to next question after a short delay
-    if (currentQuestionIndex < questions.length - 1) {
-      Future.delayed(Duration(milliseconds: 500), () {
-        _slideController.reset();
-        setState(() {
-          currentQuestionIndex++;
-        });
-        _slideController.forward();
-      });
-    }
+  void _nextQuestion() {
+    if (questions.isEmpty || currentQuestionIndex >= questions.length - 1)
+      return;
+
+    _slideController.reset();
+    setState(() {
+      currentQuestionIndex++;
+      // Don't modify the userAnswer here - let it keep its existing value
+      // (null if unanswered, true/false if previously answered)
+    });
+    _slideController.forward();
+  }
+
+  void _previousQuestion() {
+    if (questions.isEmpty || currentQuestionIndex <= 0) return;
+
+    _slideController.reset();
+    setState(() {
+      currentQuestionIndex--;
+      // Don't modify the userAnswer here - let it keep its existing value
+      // (null if unanswered, true/false if previously answered)
+    });
+    _slideController.forward();
   }
 
   void _submitQuiz() {
@@ -142,7 +157,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       questions.isNotEmpty && currentQuestionIndex == questions.length - 1;
   bool get _canProceed =>
       questions.isNotEmpty &&
+      currentQuestionIndex < questions.length &&
       questions[currentQuestionIndex].userAnswer != null;
+  bool get _canGoBack => questions.isNotEmpty && currentQuestionIndex > 0;
 
   @override
   Widget build(BuildContext context) {
@@ -354,25 +371,77 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                         SizedBox(height: 40),
 
                         // Answer Buttons
+                        YesNoQuiz(
+                          question: currentQuestion.questionContent,
+                          onChanged: _selectAnswer,
+                          initialValue: currentQuestion.userAnswer,
+                        ),
+                        // Navigation Buttons
+                        SizedBox(height: 32),
                         Row(
                           children: [
-                            Expanded(
-                              child: _buildAnswerButton(
-                                answer: true,
-                                label: "YES",
-                                icon: Icons.check_circle,
-                                color: Colors.green,
-                                isSelected: currentQuestion.userAnswer == true,
+                            if (_canGoBack)
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: _previousQuestion,
+                                  style: OutlinedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.arrow_back, size: 20),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        "Previous",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 16),
+                            if (_canGoBack) SizedBox(width: 16),
                             Expanded(
-                              child: _buildAnswerButton(
-                                answer: false,
-                                label: "NO",
-                                icon: Icons.cancel,
-                                color: Colors.red,
-                                isSelected: currentQuestion.userAnswer == false,
+                              child: ElevatedButton(
+                                onPressed:
+                                    _canProceed
+                                        ? (_isLastQuestion
+                                            ? _submitQuiz
+                                            : _nextQuestion)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue[600],
+                                  foregroundColor: Colors.white,
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      _isLastQuestion ? "Submit Quiz" : "Next",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Icon(
+                                      _isLastQuestion
+                                          ? Icons.check
+                                          : Icons.arrow_forward,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -381,89 +450,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-              ),
-            ),
-
-            // Submit Button (only show on last question)
-            if (_isLastQuestion && _canProceed)
-              Container(
-                margin: EdgeInsets.all(20),
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _submitQuiz,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[600],
-                    foregroundColor: Colors.white,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Submit Quiz",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(Icons.check, size: 20),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAnswerButton({
-    required bool answer,
-    required String label,
-    required IconData icon,
-    required Color color,
-    required bool isSelected,
-  }) {
-    return GestureDetector(
-      onTap: () => _selectAnswer(answer),
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-        decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: .1) : Colors.grey[50],
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? color : Colors.grey[300]!,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color:
-                    isSelected ? color.withValues(alpha: .2) : Colors.grey[100],
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: Icon(
-                icon,
-                size: 28,
-                color: isSelected ? color : Colors.grey[600],
-              ),
-            ),
-            SizedBox(height: 12),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: isSelected ? color : Colors.grey[600],
               ),
             ),
           ],
