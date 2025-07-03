@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_iradat/screens/authorized/homepage/home_view.dart';
 import 'package:quiz_iradat/screens/auth/login/login_view.dart';
+import 'package:quiz_iradat/settings/route_management.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -51,7 +52,7 @@ class LandingController extends GetxController {
     final token = prefs.getString('auth_token');
     if (token != null && token.isNotEmpty) {
       // Navigate to home screen using GetX navigation
-      Get.offAll(() => const Homescreen());
+      Get.offAllNamed(AppRoutes.home);
     }
   }
 

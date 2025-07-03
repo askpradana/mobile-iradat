@@ -3,12 +3,20 @@ import 'package:get/get.dart';
 import 'package:quiz_iradat/screens/authorized/homepage/homescreen.dart';
 import 'package:quiz_iradat/screens/quizdescriptionscreen.dart';
 
+class HomeScreenBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => HomeController());
+  }
+}
+
 class Homescreen extends StatelessWidget {
   const Homescreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.put(HomeController());
+    // final c = Get.put(HomeController());
+    final c = Get.find<HomeController>();
 
     final List<String> titles = ['Quizzes', 'Profile'];
 
@@ -19,13 +27,23 @@ class Homescreen extends StatelessWidget {
           index: c.currentIndex.value,
           children: [_buildHomeScreen(c), _buildProfileScreen(context, c)],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: c.currentIndex.value,
-          onTap: (i) => c.currentIndex.value = i,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          ],
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          child: BottomNavigationBar(
+            showSelectedLabels: false,
+            currentIndex: c.currentIndex.value,
+            onTap: (i) => c.currentIndex.value = i,
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Settings',
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -156,7 +174,7 @@ class Homescreen extends StatelessWidget {
           leading: const Icon(Icons.settings_outlined),
           title: const Text('Application Settings'),
           trailing: const Icon(Icons.arrow_forward_ios),
-          onTap: () => _snack(context, 'Application Settings tapped'),
+          onTap: () => Get.toNamed('/settings'),
         ),
         const Divider(),
         ListTile(
