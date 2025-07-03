@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:quiz_iradat/screens/landingscreen.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:get/get.dart';
+import 'package:quiz_iradat/screens/auth/onboarding/landing_view.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(
+    widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
+  );
   await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+  runApp(
+    GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Quiz Iradat',
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      home: const LandingScreen(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,11 +25,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Quiz Iradat',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      home: const Landingscreen(),
-    );
+    return const LandingScreen();
   }
 }
