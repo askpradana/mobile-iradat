@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quiz_iradat/screens/homescreen.dart';
-import 'package:quiz_iradat/screens/loginscreen.dart';
+import 'package:quiz_iradat/screens/authorized/homepage/home_view.dart';
+import 'package:quiz_iradat/screens/auth/login/login_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -72,12 +72,12 @@ class LandingController extends GetxController {
         curve: Curves.easeInOut,
       );
     } else {
-      Get.to(() => const LoginScreen());
+      Get.to(() => const LoginView());
     }
   }
 
   void skipOnboarding() {
-    Get.to(() => const LoginScreen());
+    Get.to(() => const LoginView());
   }
 }
 
