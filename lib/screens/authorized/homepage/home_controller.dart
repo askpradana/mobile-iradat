@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quiz_iradat/screens/quizdescriptionscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
@@ -10,11 +11,19 @@ import 'package:quiz_iradat/settings/supabase.dart';
 class HomeController extends GetxController {
   final quizzes = <Map<String, dynamic>>[].obs;
   final currentIndex = 0.obs;
+  int get quizCount => quizzes.length;
+  bool get isQuizEmpty => quizzes.isEmpty;
+  bool get isLastQuiz => currentIndex.value == quizCount - 1;
+  bool get isQuizAvailable => getQuizByIndex(currentIndex.value)['isAvailable'];
 
   @override
   void onInit() {
     super.onInit();
     loadQuizzes();
+  }
+
+  Map<String, dynamic> getQuizByIndex(int index) {
+    return quizzes[index];
   }
 
   Future<void> loadQuizzes() async {
@@ -25,6 +34,24 @@ class HomeController extends GetxController {
     } catch (e) {
       debugPrint('Error loading quizzes: $e');
     }
+  }
+
+  Function()? navigateToQuizScreen() {
+    if (isQuizAvailable) {
+      return () {
+        Get.to(
+          () => QuizScreen(
+            quizTitle: getQuizByIndex(currentIndex.value)['title'],
+            quizId: getQuizByIndex(currentIndex.value)['id'],
+            totalQuestions: getQuizByIndex(currentIndex.value)['questions'],
+            timeLimit: getQuizByIndex(currentIndex.value)['timeLimit'],
+            quizDescription: getQuizByIndex(currentIndex.value)['description'],
+            quizType: getQuizByIndex(currentIndex.value)['quizType'],
+          ),
+        );
+      };
+    }
+    return null;
   }
 
   Future<void> handleLogout(BuildContext context) async {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quiz_iradat/screens/authorized/homepage/homescreen.dart';
+import 'package:quiz_iradat/screens/authorized/homepage/home_controller.dart';
 import 'package:quiz_iradat/screens/quizdescriptionscreen.dart';
 
 class HomeScreenBinding extends Bindings {
@@ -52,7 +52,7 @@ class Homescreen extends StatelessWidget {
   Widget _buildHomeScreen(HomeController c) {
     return Obx(
       () =>
-          c.quizzes.isEmpty
+          c.isQuizEmpty
               ? const Center(child: CircularProgressIndicator())
               : Padding(
                 padding: const EdgeInsets.all(16),
@@ -60,7 +60,6 @@ class Homescreen extends StatelessWidget {
                   itemCount: c.quizzes.length,
                   itemBuilder: (_, i) {
                     final quiz = c.quizzes[i];
-                    final isAvailable = quiz['isAvailable'] as bool;
                     return Container(
                       margin: const EdgeInsets.only(bottom: 12),
                       child: Card(
@@ -71,7 +70,7 @@ class Homescreen extends StatelessWidget {
                         ),
                         child: InkWell(
                           onTap:
-                              isAvailable
+                              c.isQuizAvailable
                                   ? () {
                                     Get.to(
                                       () => QuizScreen(
@@ -100,7 +99,7 @@ class Homescreen extends StatelessWidget {
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
                                           color:
-                                              isAvailable
+                                              c.isQuizAvailable
                                                   ? Colors.black87
                                                   : Colors.grey[500],
                                         ),
@@ -111,7 +110,7 @@ class Homescreen extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 14,
                                           color:
-                                              isAvailable
+                                              c.isQuizAvailable
                                                   ? Colors.grey[600]
                                                   : Colors.grey[400],
                                         ),
@@ -126,24 +125,24 @@ class Homescreen extends StatelessWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color:
-                                        isAvailable
+                                        c.isQuizAvailable
                                             ? Colors.green[50]
                                             : Colors.grey[100],
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                       color:
-                                          isAvailable
+                                          c.isQuizAvailable
                                               ? Colors.green[200]!
                                               : Colors.grey[300]!,
                                       width: 1,
                                     ),
                                   ),
                                   child: Text(
-                                    isAvailable ? 'Available' : 'Locked',
+                                    c.isQuizAvailable ? 'Available' : 'Locked',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color:
-                                          isAvailable
+                                          c.isQuizAvailable
                                               ? Colors.green[700]
                                               : Colors.grey[600],
                                     ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quiz_iradat/screens/authorized/homepage/home_view.dart';
 import 'package:quiz_iradat/screens/auth/login/login_view.dart';
 import 'package:quiz_iradat/settings/route_management.dart';
 import 'package:shared_preferences/shared_preferences.dart';

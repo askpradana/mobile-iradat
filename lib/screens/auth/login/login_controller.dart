@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:quiz_iradat/screens/authorized/homepage/home_view.dart';
 import 'package:quiz_iradat/settings/route_management.dart';
 import 'package:quiz_iradat/settings/supabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
