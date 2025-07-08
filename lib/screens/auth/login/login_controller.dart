@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:quiz_iradat/settings/route_management.dart';
 import 'package:quiz_iradat/settings/supabase.dart';
+import 'package:quiz_iradat/widgets/snackbars.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
@@ -43,9 +44,7 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
-      );
+      CustomSnackbar.showError('Login Error', e.toString());
     }
   }
 

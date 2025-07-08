@@ -63,7 +63,7 @@ class SettingsComponents extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
-              onTap: () => controller.handleLogout(context),
+              onTap: () => controller.handleLogout(),
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
