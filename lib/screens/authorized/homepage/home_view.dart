@@ -70,7 +70,7 @@ class Homescreen extends StatelessWidget {
                         ),
                         child: InkWell(
                           onTap:
-                              c.isQuizAvailable
+                              c.isQuizAvailableByIndex(i)
                                   ? () {
                                     Get.to(
                                       () => QuizScreen(
@@ -99,7 +99,7 @@ class Homescreen extends StatelessWidget {
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
                                           color:
-                                              c.isQuizAvailable
+                                              c.isQuizAvailableByIndex(i)
                                                   ? Colors.black87
                                                   : Colors.grey[500],
                                         ),
@@ -110,7 +110,7 @@ class Homescreen extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 14,
                                           color:
-                                              c.isQuizAvailable
+                                              c.isQuizAvailableByIndex(i)
                                                   ? Colors.grey[600]
                                                   : Colors.grey[400],
                                         ),
@@ -125,24 +125,26 @@ class Homescreen extends StatelessWidget {
                                   ),
                                   decoration: BoxDecoration(
                                     color:
-                                        c.isQuizAvailable
+                                        c.isQuizAvailableByIndex(i)
                                             ? Colors.green[50]
                                             : Colors.grey[100],
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                       color:
-                                          c.isQuizAvailable
+                                          c.isQuizAvailableByIndex(i)
                                               ? Colors.green[200]!
                                               : Colors.grey[300]!,
                                       width: 1,
                                     ),
                                   ),
                                   child: Text(
-                                    c.isQuizAvailable ? 'Available' : 'Locked',
+                                    c.isQuizAvailableByIndex(i)
+                                        ? 'Available'
+                                        : 'Locked',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color:
-                                          c.isQuizAvailable
+                                          c.isQuizAvailableByIndex(i)
                                               ? Colors.green[700]
                                               : Colors.grey[600],
                                     ),

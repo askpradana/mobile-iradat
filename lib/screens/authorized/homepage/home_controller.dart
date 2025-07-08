@@ -14,7 +14,6 @@ class HomeController extends GetxController {
   int get quizCount => quizzes.length;
   bool get isQuizEmpty => quizzes.isEmpty;
   bool get isLastQuiz => currentIndex.value == quizCount - 1;
-  bool get isQuizAvailable => getQuizByIndex(currentIndex.value)['isAvailable'];
 
   @override
   void onInit() {
@@ -24,6 +23,10 @@ class HomeController extends GetxController {
 
   Map<String, dynamic> getQuizByIndex(int index) {
     return quizzes[index];
+  }
+
+  bool isQuizAvailableByIndex(int index) {
+    return quizzes[index]['isAvailable'];
   }
 
   Future<void> loadQuizzes() async {
@@ -36,8 +39,8 @@ class HomeController extends GetxController {
     }
   }
 
-  Function()? navigateToQuizScreen() {
-    if (isQuizAvailable) {
+  Function()? navigateToQuizScreen(int index) {
+    if (isQuizAvailableByIndex(index)) {
       return () {
         Get.to(
           () => QuizScreen(
