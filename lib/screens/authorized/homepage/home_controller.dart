@@ -7,6 +7,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:quiz_iradat/screens/auth/login/login_view.dart';
 import 'package:quiz_iradat/settings/supabase.dart';
+import 'package:quiz_iradat/widgets/modaldialog.dart';
 
 class HomeController extends GetxController {
   final quizzes = <Map<String, dynamic>>[].obs;
@@ -58,15 +59,14 @@ class HomeController extends GetxController {
     return null;
   }
 
-  // Updated logout method using GetX dialogs
   Future<void> handleLogout() async {
     // Show confirmation dialog first
-    final bool? shouldLogout = await _showLogoutConfirmation();
+    final bool? shouldLogout = await ModalDialog.showLogoutConfirmation();
 
     if (shouldLogout != true) return;
 
     // Show loading dialog with animation
-    _showLoadingDialog();
+    ModalDialog.showLoadingDialog();
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
@@ -100,140 +100,5 @@ class HomeController extends GetxController {
         duration: const Duration(milliseconds: 500),
       );
     }
-  }
-
-  // Confirmation dialog using GetX
-  Future<bool?> _showLogoutConfirmation() {
-    return Get.dialog<bool>(
-      TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutBack,
-        builder: (context, value, child) {
-          return Transform.scale(
-            scale: value,
-            child: AlertDialog(
-              backgroundColor: Colors.grey[50],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              title: Row(
-                children: [
-                  Icon(Icons.logout_rounded, color: Colors.red[600], size: 28),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'Logout Confirmation',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              content: const Text(
-                'Are you sure you want to logout? You will need to sign in again to access your account.',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Get.back(result: false),
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                    foregroundColor: Colors.grey[600],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text('Cancel', style: TextStyle(fontSize: 16)),
-                ),
-                ElevatedButton(
-                  onPressed: () => Get.back(result: true),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[600],
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Logout',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-      barrierDismissible: false,
-    );
-  }
-
-  // Loading dialog using GetX
-  void _showLoadingDialog() {
-    Get.dialog(
-      PopScope(
-        canPop: false,
-        child: Dialog(
-          backgroundColor: Colors.grey[50],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0.0, end: 1.0),
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.easeInOut,
-                  builder: (context, value, child) {
-                    return Transform.rotate(
-                      angle: value * 2 * 3.14159,
-                      child: Icon(
-                        Icons.logout_rounded,
-                        size: 48,
-                        color: Colors.red[600],
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Logging out...',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Please wait while we securely log you out',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                const LinearProgressIndicator(
-                  color: Colors.green,
-                  backgroundColor: Colors.greenAccent,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      barrierDismissible: false,
-    );
   }
 }
