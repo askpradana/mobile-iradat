@@ -41,7 +41,15 @@ class LandingScreen extends StatelessWidget {
                 onPageChanged: controller.onPageChanged,
                 itemBuilder: (context, index) {
                   final item = controller.items[index];
-                  return Padding(
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: item.color.withValues(alpha: 0.1),
+                      border: Border.all(
+                        color: item.color.withValues(alpha: 0.2),
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24.0,
                       vertical: 8.0,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_iradat/screens/auth/login/login_view.dart';
+import 'package:quiz_iradat/screens/auth/onboarding/landing_model.dart';
 import 'package:quiz_iradat/settings/route_management.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -17,7 +18,7 @@ class LandingController extends GetxController {
       FlutterNativeSplash.remove();
     });
     _checkAuthToken();
-    pageController = PageController(viewportFraction: 0.75);
+    pageController = PageController(viewportFraction: 0.9);
     items = [
       OnboardingItem(
         title: 'Feature Highlights',
@@ -79,20 +80,4 @@ class LandingController extends GetxController {
   void skipOnboarding() {
     Get.to(() => const LoginView());
   }
-}
-
-class OnboardingItem {
-  final String title;
-  final String subtitle;
-  final String description;
-  final IconData icon;
-  final Color color;
-
-  OnboardingItem({
-    required this.title,
-    required this.subtitle,
-    required this.description,
-    required this.icon,
-    required this.color,
-  });
 }

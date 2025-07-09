@@ -20,10 +20,13 @@ class LoginController extends GetxController {
 
   Future<void> handleLogin(BuildContext context) async {
     if (!formKey.currentState!.validate()) return;
+    if (isLoading.value) return;
 
     isLoading.value = true;
 
     try {
+      await Future.delayed(Duration(milliseconds: 1500));
+
       final response = await http.post(
         Uri.parse('$supabaseUrl/auth/v1/token?grant_type=password'),
         headers: {'Content-Type': 'application/json', 'apikey': supabaseAPIKey},
