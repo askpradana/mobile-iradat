@@ -34,7 +34,7 @@ class AppPages {
     ),
 
     // Settings
-    GetPage(name: AppRoutes.editProfile, page: () => const ProfileSettings()),
+    GetPage(name: AppRoutes.editProfile, page: () => ProfilesettingsView()),
     GetPage(name: AppRoutes.settings, page: () => const ApplicationSettings()),
     GetPage(
       name: AppRoutes.aboutApplication,

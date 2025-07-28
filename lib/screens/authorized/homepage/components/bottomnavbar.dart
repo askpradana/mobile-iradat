@@ -14,14 +14,19 @@ class BottomNavigationBarHome extends StatelessWidget {
         highlightColor: Colors.transparent,
       ),
       child: BottomNavigationBar(
-        showSelectedLabels: false,
+        showSelectedLabels: true,
         currentIndex: c.currentIndex.value,
         onTap: (i) => c.currentIndex.value = i,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+            activeIcon: Icon(Icons.home),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
             label: 'Settings',
+            activeIcon: Icon(Icons.settings),
           ),
         ],
       ),
