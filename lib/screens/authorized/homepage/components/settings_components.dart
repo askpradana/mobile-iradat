@@ -26,10 +26,18 @@ class SettingsComponents extends StatelessWidget {
           onTap: () => Get.toNamed(AppRoutes.editProfile),
         ),
         ListTile(
-          leading: const Icon(Icons.settings_outlined),
-          title: const Text('Application Settings'),
-          trailing: const Icon(Icons.arrow_forward_ios),
-          onTap: () => Get.toNamed('/settings'),
+          leading: const Icon(Icons.dark_mode_outlined),
+          title: const Text('Dark Mode'),
+          trailing: Obx(() {
+            final isDark = controller.themeMode.value == ThemeMode.dark;
+            return Switch(
+              value: isDark,
+              onChanged: (value) {
+                controller.toggleTheme(value ? 1 : 0);
+              },
+              activeColor: Colors.purple,
+            );
+          }),
         ),
         const Divider(),
         ListTile(

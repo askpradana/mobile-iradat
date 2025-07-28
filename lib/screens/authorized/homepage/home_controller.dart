@@ -16,11 +16,28 @@ class HomeController extends GetxController {
   bool get isQuizEmpty => quizzes.isEmpty;
   bool get isLastQuiz => currentIndex.value == quizCount - 1;
   final List<String> bottomNavbarTitles = ['Quizzes', 'Profile'];
+  var isDarkMode = false.obs;
+  var themeMode = ThemeMode.system.obs;
 
   @override
   void onInit() {
     super.onInit();
     loadQuizzes();
+  }
+
+  void toggleTheme(int index) {
+    switch (index) {
+      case 0:
+        themeMode.value = ThemeMode.light;
+        break;
+      case 1:
+        themeMode.value = ThemeMode.dark;
+        break;
+      case 2:
+        themeMode.value = ThemeMode.system;
+        break;
+    }
+    Get.changeThemeMode(themeMode.value);
   }
 
   Map<String, dynamic> getQuizByIndex(int index) {
