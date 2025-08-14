@@ -12,7 +12,6 @@ import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/get_auth_status_usecase.dart';
 import '../../domain/usecases/get_quizzes_usecase.dart';
-import '../../features/auth/presentation/controllers/onboarding_controller.dart';
 
 class DependencyInjection {
   static Future<void> init() async {

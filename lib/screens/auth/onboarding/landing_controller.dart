@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:quiz_iradat/screens/auth/login/login_view.dart';
 import 'package:quiz_iradat/screens/auth/onboarding/landing_model.dart';
 import 'package:quiz_iradat/settings/route_management.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:quiz_iradat/core/services/auth_storage_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class LandingController extends GetxController {
@@ -48,9 +48,8 @@ class LandingController extends GetxController {
   }
 
   Future<void> _checkAuthToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
-    if (token != null && token.isNotEmpty) {
+    final isAuthenticated = await AuthStorageService.isAuthenticated();
+    if (isAuthenticated) {
       // Navigate to home screen using GetX navigation
       Get.offAllNamed(AppRoutes.home);
     }

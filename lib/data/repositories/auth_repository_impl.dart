@@ -5,17 +5,16 @@ import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
-import '../models/user_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthLocalDataSource localDataSource;
-  
+
   AuthRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
   });
-  
+
   @override
   Future<Either<Failure, User>> login(String email, String password) async {
     try {
@@ -30,7 +29,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ServerFailure('Unexpected error: $e'));
     }
   }
-  
+
   @override
   Future<Either<Failure, void>> logout() async {
     try {
@@ -51,7 +50,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ServerFailure('Unexpected error: $e'));
     }
   }
-  
+
   @override
   Future<Either<Failure, bool>> isLoggedIn() async {
     try {
@@ -63,7 +62,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(CacheFailure('Unexpected error: $e'));
     }
   }
-  
+
   @override
   Future<Either<Failure, User?>> getCurrentUser() async {
     try {
@@ -75,7 +74,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(CacheFailure('Unexpected error: $e'));
     }
   }
-  
+
   @override
   Future<Either<Failure, void>> saveAuthToken(String token) async {
     try {
@@ -87,7 +86,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(CacheFailure('Unexpected error: $e'));
     }
   }
-  
+
   @override
   Future<Either<Failure, String?>> getAuthToken() async {
     try {
