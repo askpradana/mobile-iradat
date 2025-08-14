@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quiz_iradat/core/services/auth_storage_service.dart';
+import 'package:quiz_iradat/data/models/user_model.dart';
+import 'package:quiz_iradat/data/models/service_model.dart';
 import 'package:quiz_iradat/screens/quizdescriptionscreen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:quiz_iradat/screens/auth/login/login_view.dart';
@@ -18,11 +20,17 @@ class HomeController extends GetxController {
   final List<String> bottomNavbarTitles = ['Quizzes', 'Profile'];
   var isDarkMode = false.obs;
   var themeMode = ThemeMode.system.obs;
+  
+  // User and services data from login
+  final Rx<UserModel?> currentUser = Rx<UserModel?>(null);
+  final RxList<ServiceModel> availableServices = <ServiceModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     loadQuizzes();
+    loadUserData();
+    loadServicesData();
   }
 
   void toggleTheme(int index) {
@@ -57,6 +65,30 @@ class HomeController extends GetxController {
       debugPrint('Error loading quizzes: $e');
     }
   }
+  
+  Future<void> loadUserData() async {
+    try {
+      final user = await AuthStorageService.getUserData();
+      if (user != null) {
+        currentUser.value = user;
+        debugPrint('Loaded user: ${user.name} (${user.email})');
+      }
+    } catch (e) {
+      debugPrint('Error loading user data: $e');
+    }
+  }
+  
+  Future<void> loadServicesData() async {
+    try {
+      final services = await AuthStorageService.getServicesData();
+      if (services != null) {
+        availableServices.assignAll(services);
+        debugPrint('Loaded ${services.length} services');
+      }
+    } catch (e) {
+      debugPrint('Error loading services data: $e');
+    }
+  }
 
   Function()? navigateToQuizScreen(int index) {
     if (isQuizAvailableByIndex(index)) {
@@ -85,16 +117,15 @@ class HomeController extends GetxController {
     // Show loading dialog with animation
     ModalDialog.showLoadingDialog();
 
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
-
     try {
+      final token = await AuthStorageService.getAuthToken();
+      
       if (token != null) {
+        // Make logout API call with new backend
         await http.post(
-          Uri.parse('$supabaseUrl/auth/v1/logout'),
+          Uri.parse('$backendBaseUrl/auth/logout'),
           headers: {
             'Content-Type': 'application/json',
-            'apikey': supabaseAPIKey,
             'Authorization': 'Bearer $token',
           },
         );
@@ -108,7 +139,12 @@ class HomeController extends GetxController {
       // Close loading dialog
       Get.back();
 
-      await prefs.remove('auth_token');
+      // Clear all authentication data
+      await AuthStorageService.clearAuthData();
+      
+      // Clear local state
+      currentUser.value = null;
+      availableServices.clear();
 
       // Add fade transition to login
       Get.offAll(

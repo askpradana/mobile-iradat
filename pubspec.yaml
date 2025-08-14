@@ -18,6 +18,9 @@ dependencies:
   syncfusion_flutter_core: ^30.1.37
   get: ^4.7.2
   flutter_native_splash: ^2.4.6
+  equatable: ^2.0.7
+  dartz: ^0.10.1
+  flutter_secure_storage: ^9.2.4
 
 dev_dependencies:
   flutter_test:
