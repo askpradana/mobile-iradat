@@ -31,6 +31,20 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, void>> register(String email, String name, String password, String phone) async {
+    try {
+      await remoteDataSource.register(email, name, password, phone);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> logout() async {
     try {
       final token = await localDataSource.getAuthToken();
@@ -40,14 +54,15 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.clearUser();
       await localDataSource.clearAuthToken();
       return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    } on CacheException catch (e) {
-      return Left(CacheFailure(e.message));
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: $e'));
+      // Always clear local storage even if remote logout fails
+      try {
+        await localDataSource.clearUser();
+        await localDataSource.clearAuthToken();
+        return const Right(null);
+      } catch (cacheError) {
+        return Left(CacheFailure('Failed to clear local data: $cacheError'));
+      }
     }
   }
 

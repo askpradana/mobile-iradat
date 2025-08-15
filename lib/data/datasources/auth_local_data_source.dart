@@ -1,4 +1,5 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/user_model.dart';
 import '../../core/errors/exceptions.dart';
 
@@ -12,19 +13,20 @@ abstract class AuthLocalDataSource {
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
-  final SharedPreferences sharedPreferences;
+  static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   
-  static const String cachedUserKey = 'CACHED_USER';
+  static const String cachedUserKey = 'user_data';
   static const String authTokenKey = 'auth_token';
   
-  AuthLocalDataSourceImpl(this.sharedPreferences);
+  AuthLocalDataSourceImpl();
   
   @override
   Future<UserModel?> getCachedUser() async {
     try {
-      final jsonString = sharedPreferences.getString(cachedUserKey);
+      final jsonString = await _secureStorage.read(key: cachedUserKey);
       if (jsonString != null) {
-        return UserModel.fromJson({'email': jsonString, 'id': '1'});
+        final json = jsonDecode(jsonString) as Map<String, dynamic>;
+        return UserModel.fromJson(json);
       }
       return null;
     } catch (e) {
@@ -35,7 +37,10 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<void> cacheUser(UserModel user) async {
     try {
-      await sharedPreferences.setString(cachedUserKey, user.email);
+      await _secureStorage.write(
+        key: cachedUserKey, 
+        value: jsonEncode(user.toJson())
+      );
     } catch (e) {
       throw CacheException('Failed to cache user: $e');
     }
@@ -44,7 +49,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<void> clearUser() async {
     try {
-      await sharedPreferences.remove(cachedUserKey);
+      await _secureStorage.delete(key: cachedUserKey);
     } catch (e) {
       throw CacheException('Failed to clear user: $e');
     }
@@ -53,7 +58,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<String?> getAuthToken() async {
     try {
-      return sharedPreferences.getString(authTokenKey);
+      return await _secureStorage.read(key: authTokenKey);
     } catch (e) {
       throw CacheException('Failed to get auth token: $e');
     }
@@ -62,7 +67,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<void> saveAuthToken(String token) async {
     try {
-      await sharedPreferences.setString(authTokenKey, token);
+      await _secureStorage.write(key: authTokenKey, value: token);
     } catch (e) {
       throw CacheException('Failed to save auth token: $e');
     }
@@ -71,7 +76,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<void> clearAuthToken() async {
     try {
-      await sharedPreferences.remove(authTokenKey);
+      await _secureStorage.delete(key: authTokenKey);
     } catch (e) {
       throw CacheException('Failed to clear auth token: $e');
     }

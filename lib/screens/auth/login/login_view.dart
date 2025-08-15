@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'login_controller.dart';
+import '../register/register_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -212,16 +213,7 @@ class LoginView extends StatelessWidget {
                       style: TextStyle(color: Colors.black54),
                     ),
                     TextButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Sign up functionality to be implemented',
-                            ),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      },
+                      onPressed: () => Get.to(() => const RegisterView()),
                       child: const Text(
                         'Sign Up',
                         style: TextStyle(

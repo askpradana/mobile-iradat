@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import '../../features/auth/presentation/controllers/login_controller.dart';
+import '../../features/auth/presentation/controllers/register_controller.dart';
 import '../../features/auth/presentation/controllers/onboarding_controller.dart';
 
 class InitialBinding extends Bindings {
@@ -14,6 +15,10 @@ class AuthBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<LoginController>(
       () => LoginController(loginUseCase: Get.find()),
+    );
+    
+    Get.lazyPut<RegisterController>(
+      () => RegisterController(registerUseCase: Get.find()),
     );
     
     Get.lazyPut<OnboardingController>(

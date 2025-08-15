@@ -9,6 +9,7 @@ import '../../data/repositories/quiz_repository_impl.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/repositories/quiz_repository.dart';
 import '../../domain/usecases/login_usecase.dart';
+import '../../domain/usecases/register_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/get_auth_status_usecase.dart';
 import '../../domain/usecases/get_quizzes_usecase.dart';
@@ -30,7 +31,7 @@ class DependencyInjection {
 
   static Future<void> _initDataSources() async {
     Get.put<AuthLocalDataSource>(
-      AuthLocalDataSourceImpl(Get.find<SharedPreferences>()),
+      AuthLocalDataSourceImpl(),
       permanent: true,
     );
 
@@ -60,6 +61,11 @@ class DependencyInjection {
   static Future<void> _initUseCases() async {
     Get.put<LoginUseCase>(
       LoginUseCase(Get.find<AuthRepository>()),
+      permanent: true,
+    );
+
+    Get.put<RegisterUseCase>(
+      RegisterUseCase(Get.find<AuthRepository>()),
       permanent: true,
     );
 

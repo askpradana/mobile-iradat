@@ -4,6 +4,7 @@ import '../entities/user.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, User>> login(String email, String password);
+  Future<Either<Failure, void>> register(String email, String name, String password, String phone);
   Future<Either<Failure, void>> logout();
   Future<Either<Failure, bool>> isLoggedIn();
   Future<Either<Failure, User?>> getCurrentUser();

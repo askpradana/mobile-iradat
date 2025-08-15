@@ -3,9 +3,11 @@ import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 import '../../core/errors/exceptions.dart';
 import '../../core/constants/app_constants.dart';
+import '../../settings/supabase.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String email, String password);
+  Future<void> register(String email, String name, String password, String phone);
   Future<void> logout(String token);
 }
 
@@ -49,23 +51,48 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
   
   @override
-  Future<void> logout(String token) async {
+  Future<void> register(String email, String name, String password, String phone) async {
     try {
       final response = await client.post(
-        Uri.parse('${AppConstants.supabaseUrl}/auth/v1/logout'),
+        Uri.parse('$backendBaseUrl/auth/register'),
         headers: {
           'Content-Type': 'application/json',
-          'apikey': AppConstants.supabaseAPIKey,
-          'Authorization': 'Bearer $token',
         },
+        body: jsonEncode({
+          'email': email,
+          'name': name,
+          'password': password,
+          'phone': phone,
+        }),
       );
       
-      if (response.statusCode != 200) {
-        throw ServerException('Logout failed');
+      final body = jsonDecode(response.body);
+      
+      if (response.statusCode == 200 && body['success'] == true) {
+        return;
+      } else {
+        throw ServerException(
+          body['message'] ?? 'Registration failed',
+        );
       }
     } catch (e) {
       if (e is ServerException) rethrow;
-      throw NetworkException('Network error occurred during logout: $e');
+      throw NetworkException('Network error occurred: $e');
+    }
+  }
+  
+  @override
+  Future<void> logout(String token) async {
+    try {
+      await client.post(
+        Uri.parse('$backendBaseUrl/auth/logout'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+    } catch (e) {
+      // Ignore network errors - we'll clean storage regardless
     }
   }
 }
