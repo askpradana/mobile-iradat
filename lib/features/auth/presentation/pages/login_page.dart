@@ -19,7 +19,7 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildHeader(),
+                _buildHeader(context),
                 const SizedBox(height: 48),
                 _buildEmailField(controller),
                 const SizedBox(height: 16),
@@ -27,7 +27,7 @@ class LoginPage extends StatelessWidget {
                 const SizedBox(height: 32),
                 _buildLoginButton(controller),
                 const SizedBox(height: 16),
-                _buildRegisterButton(),
+                _buildRegisterButton(context),
               ],
             ),
           ),
@@ -36,27 +36,27 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Column(
       children: [
         Icon(
           Icons.quiz,
           size: 80,
-          color: Get.theme.colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
         const SizedBox(height: 16),
         Text(
           'Quiz Iradat',
-          style: Get.textTheme.headlineMedium?.copyWith(
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Get.theme.colorScheme.primary,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           'Welcome back! Please login to continue.',
-          style: Get.textTheme.bodyMedium?.copyWith(
-            color: Get.theme.colorScheme.onSurface.withValues(alpha: 0.7),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
           ),
           textAlign: TextAlign.center,
         ),
@@ -124,13 +124,13 @@ class LoginPage extends StatelessWidget {
     ));
   }
 
-  Widget _buildRegisterButton() {
+  Widget _buildRegisterButton(BuildContext context) {
     return TextButton(
       onPressed: () => Get.toNamed('/register'),
       child: Text(
         'Don\'t have an account? Register',
-        style: TextStyle(
-          color: Get.theme.colorScheme.primary,
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          color: Theme.of(context).colorScheme.primary,
           fontWeight: FontWeight.w500,
         ),
       ),

@@ -4,6 +4,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:quiz_iradat/app_routes.dart';
 import 'package:quiz_iradat/core/di/app_bindings.dart';
+import 'package:quiz_iradat/core/theme/app_theme.dart';
+import 'package:quiz_iradat/core/theme/theme_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,13 +21,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialBinding: AppBindings(),
-      initialRoute: AppPages.initial,
-      getPages: AppPages.routes,
-      title: 'Quiz Iradat',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+    return GetBuilder<ThemeController>(
+      init: ThemeController(),
+      builder: (themeController) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          initialBinding: AppBindings(),
+          initialRoute: AppPages.initial,
+          getPages: AppPages.routes,
+          title: 'Quiz Iradat',
+          
+          // Theme configuration
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeController.themeMode,
+          
+          // Remove splash screen when app is ready
+          home: null,
+        );
+      },
     );
   }
 }

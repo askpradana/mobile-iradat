@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_iradat/core/utils/notification_service.dart';
+import 'package:quiz_iradat/core/theme/app_colors.dart';
+import 'package:quiz_iradat/core/theme/theme_controller.dart';
 import '../controllers/home_controller.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,7 +22,7 @@ class HomePage extends StatelessWidget {
         ),
         body: IndexedStack(
           index: controller.currentIndex.value,
-          children: [_buildHomeTab(controller), _buildSettingsTab(controller)],
+          children: [_buildHomeTab(context, controller), _buildSettingsTab(context, controller)],
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: controller.currentIndex.value,
@@ -37,43 +39,52 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildHomeTab(HomeController controller) {
+  Widget _buildHomeTab(BuildContext context, HomeController controller) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Welcome to Quiz Iradat',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             'Your mental health assessment companion',
-            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
           ),
           const SizedBox(height: 32),
-          _buildQuickActions(controller),
+          _buildQuickActions(context, controller),
           const SizedBox(height: 32),
-          _buildAssessmentCards(controller),
+          _buildAssessmentCards(context, controller),
         ],
       ),
     );
   }
 
-  Widget _buildQuickActions(HomeController controller) {
+  Widget _buildQuickActions(BuildContext context, HomeController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Quick Actions',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
         const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
               child: _buildActionCard(
+                context,
                 icon: Icons.quiz_outlined,
                 title: 'Take Assessment',
                 subtitle: 'Start a new quiz',
@@ -83,6 +94,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(width: 16),
             Expanded(
               child: _buildActionCard(
+                context,
                 icon: Icons.person_outlined,
                 title: 'Profile',
                 subtitle: 'Manage account',
@@ -95,7 +107,9 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionCard({
+  Widget _buildActionCard(
+    BuildContext context, {
+
     required IconData icon,
     required String title,
     required String subtitle,
@@ -115,16 +129,18 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 title,
-                style: const TextStyle(
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
-                  fontSize: 14,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -134,36 +150,42 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildAssessmentCards(HomeController controller) {
+  Widget _buildAssessmentCards(BuildContext context, HomeController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Available Assessments',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
         const SizedBox(height: 16),
         _buildAssessmentCard(
+          context,
           'DASS-21',
           'Depression, Anxiety and Stress Scale',
           'Assess your current mental health state',
-          Colors.blue,
+          AppColors.assessmentBlue,
           controller.navigateToQuizzes,
         ),
         const SizedBox(height: 12),
         _buildAssessmentCard(
+          context,
           'SRQ-20',
           'Self-Reporting Questionnaire',
           'Screen for common mental disorders',
-          Colors.green,
+          AppColors.assessmentGreen,
           controller.navigateToQuizzes,
         ),
         const SizedBox(height: 12),
         _buildAssessmentCard(
+          context,
           'SMFA-10',
           'Short Form Mental Fitness Assessment',
           'Quick mental fitness evaluation',
-          Colors.orange,
+          AppColors.assessmentOrange,
           controller.navigateToQuizzes,
         ),
       ],
@@ -171,6 +193,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildAssessmentCard(
+    BuildContext context,
     String title,
     String subtitle,
     String description,
@@ -203,29 +226,34 @@ class HomePage extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
                         color: color,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       description,
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+              Icon(
+                Icons.arrow_forward_ios, 
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4), 
+                size: 16,
+              ),
             ],
           ),
         ),
@@ -233,19 +261,25 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingsTab(HomeController controller) {
+  Widget _buildSettingsTab(BuildContext context, HomeController controller) {
+    final themeController = Get.find<ThemeController>();
+    
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         children: [
           _buildSettingsCard(
+            context,
             icon: Icons.person_outlined,
             title: 'Profile',
             subtitle: 'Manage your account information',
             onTap: controller.navigateToProfile,
           ),
           const SizedBox(height: 12),
+          _buildThemeCard(context, themeController),
+          const SizedBox(height: 12),
           _buildSettingsCard(
+            context,
             icon: Icons.info_outlined,
             title: 'About',
             subtitle: 'Learn more about Quiz Iradat',
@@ -257,6 +291,7 @@ class HomePage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _buildSettingsCard(
+            context,
             icon: Icons.help_outline,
             title: 'FAQ',
             subtitle: 'Frequently asked questions',
@@ -268,6 +303,7 @@ class HomePage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _buildSettingsCard(
+            context,
             icon: Icons.contact_support_outlined,
             title: 'Contact Us',
             subtitle: 'Get help and support',
@@ -285,8 +321,8 @@ class HomePage extends StatelessWidget {
               icon: const Icon(Icons.logout),
               label: const Text('Logout'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor: Theme.of(context).colorScheme.onError,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -299,7 +335,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingsCard({
+  Widget _buildSettingsCard(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String subtitle,
@@ -310,14 +347,153 @@ class HomePage extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: Icon(icon, color: Get.theme.colorScheme.primary),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(subtitle, style: TextStyle(color: Colors.grey[600])),
+        title: Text(
+          title, 
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+        subtitle: Text(
+          subtitle, 
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
+        ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: Colors.grey[400],
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
           size: 16,
         ),
         onTap: onTap,
+      ),
+    );
+  }
+
+  Widget _buildThemeCard(BuildContext context, ThemeController themeController) {
+    return Obx(() => Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  themeController.themeModeIcon,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Theme',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      Text(
+                        'Current: ${themeController.themeModeDisplayName}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildThemeOption(
+                    context,
+                    'Light',
+                    Icons.light_mode,
+                    themeController.isLightMode,
+                    () => themeController.setLightTheme(),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _buildThemeOption(
+                    context,
+                    'Dark',
+                    Icons.dark_mode,
+                    themeController.isDarkMode,
+                    () => themeController.setDarkTheme(),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _buildThemeOption(
+                    context,
+                    'System',
+                    Icons.brightness_auto,
+                    themeController.isSystemMode,
+                    () => themeController.setSystemTheme(),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ));
+  }
+
+  Widget _buildThemeOption(
+    BuildContext context,
+    String label,
+    IconData icon,
+    bool isSelected,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              size: 20,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

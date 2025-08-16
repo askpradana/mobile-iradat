@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../data/profile_repository.dart';
 import '../../../auth/models.dart' as auth_models;
 import '../../models.dart';
+import '../../../../core/utils/date_utils.dart';
 
 class ProfileController extends GetxController {
   final ProfileRepository repo;
@@ -13,8 +14,10 @@ class ProfileController extends GetxController {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
-  final dobController = TextEditingController();
   final avatarController = TextEditingController();
+  
+  // Date of birth as DateTime reactive variable
+  final selectedDateOfBirth = Rxn<DateTime>();
 
   final isLoading = false.obs;
   final isSaving = false.obs;
@@ -34,18 +37,22 @@ class ProfileController extends GetxController {
     nameController.addListener(_checkForChanges);
     emailController.addListener(_checkForChanges);
     phoneController.addListener(_checkForChanges);
-    dobController.addListener(_checkForChanges);
     avatarController.addListener(_checkForChanges);
+    
+    // Listen to date changes
+    selectedDateOfBirth.listen((_) => _checkForChanges());
   }
 
   void _checkForChanges() {
     if (originalProfile.value != null) {
       final original = originalProfile.value!;
+      final originalDate = AppDateUtils.parseFromApi(original.dateOfBirth);
+      
       hasUnsavedChanges.value = (
         nameController.text.trim() != original.name ||
         emailController.text.trim() != original.email ||
         phoneController.text.trim() != original.phone ||
-        dobController.text.trim() != (original.dateOfBirth ?? '') ||
+        !AppDateUtils.isSameDay(selectedDateOfBirth.value, originalDate) ||
         avatarController.text.trim() != (original.avatarPicture ?? '')
       );
     }
@@ -76,7 +83,7 @@ class ProfileController extends GetxController {
     nameController.text = userData.name;
     emailController.text = userData.email;
     phoneController.text = userData.phone;
-    dobController.text = userData.dateOfBirth ?? '';
+    selectedDateOfBirth.value = AppDateUtils.parseFromApi(userData.dateOfBirth);
     avatarController.text = userData.avatarPicture ?? '';
     
     hasUnsavedChanges.value = false;
@@ -84,11 +91,28 @@ class ProfileController extends GetxController {
 
   void toggleEdit() {
     if (isEditing.value) {
+      // Reset form to original values when canceling edit mode
       if (originalProfile.value != null) {
-        _updateProfileData(originalProfile.value!);
+        _resetFormToOriginal();
       }
     }
     isEditing.toggle();
+  }
+
+  void _resetFormToOriginal() {
+    final original = originalProfile.value!;
+    
+    // Reset text controllers
+    nameController.text = original.name;
+    emailController.text = original.email;
+    phoneController.text = original.phone;
+    avatarController.text = original.avatarPicture ?? '';
+    
+    // Reset date of birth - ensure this resets properly
+    selectedDateOfBirth.value = AppDateUtils.parseFromApi(original.dateOfBirth);
+    
+    // Reset change tracking
+    hasUnsavedChanges.value = false;
   }
 
   Future<void> saveProfile() async {
@@ -104,7 +128,7 @@ class ProfileController extends GetxController {
       name: nameController.text.trim().isNotEmpty ? nameController.text.trim() : null,
       email: emailController.text.trim().isNotEmpty ? emailController.text.trim() : null,
       phone: phoneController.text.trim().isNotEmpty ? phoneController.text.trim() : null,
-      dateOfBirth: dobController.text.trim().isNotEmpty ? dobController.text.trim() : null,
+      dateOfBirthDateTime: selectedDateOfBirth.value,
       avatarPicture: avatarController.text.trim().isNotEmpty ? avatarController.text.trim() : null,
     );
     
@@ -160,22 +184,54 @@ class ProfileController extends GetxController {
     return null;
   }
 
+  String? validateDateOfBirth(DateTime? date) {
+    return AppDateUtils.validateDateOfBirth(date);
+  }
+
+  void selectDateOfBirth(DateTime? date) {
+    selectedDateOfBirth.value = date;
+  }
+
+  Future<void> showDateOfBirthPicker(BuildContext context) async {
+    final selectedDate = await AppDateUtils.showDateOfBirthPicker(
+      context,
+      initialDate: selectedDateOfBirth.value,
+    );
+    
+    if (selectedDate != null) {
+      selectDateOfBirth(selectedDate);
+    }
+  }
+
   bool get hasProfileData => profile.value != null;
   String get displayName => profile.value?.name ?? 'Loading...';
   String get displayEmail => profile.value?.email ?? '';
   String get displayPhone => profile.value?.phone ?? '';
   String get displayDob => profile.value?.dateOfBirth ?? '';
+  String get formattedDateOfBirth => AppDateUtils.formatForDisplay(selectedDateOfBirth.value);
   String get displayAvatar => profile.value?.avatarPicture ?? '';
   bool get hasAvatar => profile.value?.avatarPicture?.isNotEmpty == true;
+  int? get profileAge => AppDateUtils.getAge(selectedDateOfBirth.value);
   
   Map<String, dynamic>? get lastAnalyzedData => profile.value?.lastAnalyzed;
+  Map<String, dynamic>? get iproData => profile.value?.ipro;
+  Map<String, dynamic>? get iprobData => profile.value?.iprob;
+  Map<String, dynamic>? get iprosData => profile.value?.ipros;
+
+  bool get hasAssessmentData => 
+      (iproData?.isNotEmpty == true) || 
+      (iprobData?.isNotEmpty == true) || 
+      (iprosData?.isNotEmpty == true);
+
+  bool get hasIproData => iproData?.isNotEmpty == true;
+  bool get hasIprobData => iprobData?.isNotEmpty == true;
+  bool get hasIprosData => iprosData?.isNotEmpty == true;
 
   @override
   void onClose() {
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
-    dobController.dispose();
     avatarController.dispose();
     super.onClose();
   }

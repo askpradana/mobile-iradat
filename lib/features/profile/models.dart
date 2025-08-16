@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'dart:convert';
+import '../../core/utils/date_utils.dart';
 
 class Profile extends Equatable {
   final String id;
@@ -122,6 +123,11 @@ class Profile extends Equatable {
     );
   }
 
+  // DateTime helper properties
+  DateTime? get dateOfBirthAsDateTime => AppDateUtils.parseFromApi(dateOfBirth);
+  String get formattedDateOfBirth => AppDateUtils.formatForDisplay(dateOfBirthAsDateTime);
+  int? get age => AppDateUtils.getAge(dateOfBirthAsDateTime);
+
   @override
   List<Object?> get props => [
     id, name, email, phone, roleId, roleName, profileId,
@@ -182,15 +188,37 @@ class ProfileUpdate extends Equatable {
   final String? email;
   final String? phone;
   final String? avatarPicture;
-  final String? dateOfBirth;
+  final DateTime? dateOfBirthDateTime;
 
   const ProfileUpdate({
     this.name,
     this.email,
     this.phone,
     this.avatarPicture,
-    this.dateOfBirth,
+    this.dateOfBirthDateTime,
   });
+
+  // Backward compatibility: convert DateTime to string for API
+  String? get dateOfBirth => dateOfBirthDateTime != null 
+    ? AppDateUtils.formatForApi(dateOfBirthDateTime!) 
+    : null;
+
+  // Factory constructor for creating from existing profile data
+  factory ProfileUpdate.fromProfile(Profile profile, {
+    String? name,
+    String? email,
+    String? phone,
+    String? avatarPicture,
+    DateTime? dateOfBirthDateTime,
+  }) {
+    return ProfileUpdate(
+      name: name ?? profile.name,
+      email: email ?? profile.email,
+      phone: phone ?? profile.phone,
+      avatarPicture: avatarPicture ?? profile.avatarPicture,
+      dateOfBirthDateTime: dateOfBirthDateTime ?? profile.dateOfBirthAsDateTime,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
@@ -207,5 +235,5 @@ class ProfileUpdate extends Equatable {
   bool get hasData => toJson().isNotEmpty;
 
   @override
-  List<Object?> get props => [name, email, phone, avatarPicture, dateOfBirth];
+  List<Object?> get props => [name, email, phone, avatarPicture, dateOfBirthDateTime];
 }

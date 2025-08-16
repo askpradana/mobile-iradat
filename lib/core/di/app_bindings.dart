@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../network/api_client.dart';
+import '../theme/theme_controller.dart';
 
 class AppBindings extends Bindings {
   @override
@@ -18,6 +19,12 @@ class AppBindings extends Bindings {
 
     Get.put<ApiClient>(
       ApiClient(Get.find<FlutterSecureStorage>()),
+      permanent: true,
+    );
+
+    // Initialize theme controller
+    Get.put<ThemeController>(
+      ThemeController(),
       permanent: true,
     );
   }
