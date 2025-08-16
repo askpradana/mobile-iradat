@@ -1,6 +1,6 @@
 import '../entities/base_entity.dart';
 
-enum QuizType { yesno, slider }
+enum QuizType { yesno, slider, likert }
 
 class Quiz extends BaseEntity {
   final String id;

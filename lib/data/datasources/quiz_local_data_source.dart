@@ -27,15 +27,20 @@ class QuizLocalDataSourceImpl implements QuizLocalDataSource {
   Future<List<QuestionModel>> getQuizQuestions(String quizId) async {
     try {
       String filePath;
-      bool isSliderType = false;
+      String questionType;
       
       switch (quizId) {
         case 'self-reporting-questionnaire-20':
           filePath = AppConstants.srq20JsonPath;
+          questionType = 'yesno';
           break;
         case 'stress-management-self-assessment':
           filePath = AppConstants.smfa10JsonPath;
-          isSliderType = true;
+          questionType = 'slider';
+          break;
+        case 'dass21':
+          filePath = AppConstants.dass21JsonPath;
+          questionType = 'likert';
           break;
         default:
           throw CacheException('Quiz not found: $quizId');
@@ -43,7 +48,7 @@ class QuizLocalDataSourceImpl implements QuizLocalDataSource {
       
       final jsonString = await rootBundle.loadString(filePath);
       final jsonData = json.decode(jsonString);
-      final questionListModel = QuestionListModel.fromJson(jsonData, isSlider: isSliderType);
+      final questionListModel = QuestionListModel.fromJson(jsonData, questionType: questionType);
       return questionListModel.questions;
     } catch (e) {
       throw CacheException('Failed to load quiz questions: $e');

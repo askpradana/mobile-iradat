@@ -43,6 +43,7 @@ flutter:
     - lib/data/quizzes.json
     - lib/data/srq20.json
     - lib/data/smfa10.json
+    - lib/data/dass21.json
     - .env
     - assets/images/splashimages.png
 

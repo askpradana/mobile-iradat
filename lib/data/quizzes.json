@@ -89,6 +89,15 @@
       "timeLimit": 30,
       "quizType": "yesno",
       "description": "Evaluate your ability to cope with stress and bounce back from challenging situations."
+    },
+    {
+      "id": "dass21",
+      "title": "Depression Anxiety Stress Scale (DASS-21)",
+      "questions": 21,
+      "isAvailable": true,
+      "timeLimit": 15,
+      "quizType": "likert",
+      "description": "Skala depresi, kecemasan, dan stres yang mengukur kondisi emosional Anda dalam 1 minggu terakhir. DASS-21 terdiri dari 21 pertanyaan yang dibagi menjadi tiga subskala: depresi (7 item), kecemasan (7 item), dan stres (7 item). Setiap item dinilai dalam skala 4-poin dari 'Tidak Pernah' hingga 'Sangat Sering'."
     }
   ]
 }

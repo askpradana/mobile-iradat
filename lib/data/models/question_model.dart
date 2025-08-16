@@ -6,11 +6,14 @@ abstract class QuestionModel extends Question {
     required super.questionContent,
   });
   
-  factory QuestionModel.fromJson(Map<String, dynamic> json, {bool isSlider = false}) {
-    if (isSlider) {
-      return SliderQuestionModel.fromJson(json);
-    } else {
-      return YesNoQuestionModel.fromJson(json);
+  factory QuestionModel.fromJson(Map<String, dynamic> json, {String questionType = 'yesno'}) {
+    switch (questionType.toLowerCase()) {
+      case 'slider':
+        return SliderQuestionModel.fromJson(json);
+      case 'likert':
+        return LikertQuestionModel.fromJson(json);
+      default:
+        return YesNoQuestionModel.fromJson(json);
     }
   }
   
@@ -106,17 +109,73 @@ class SliderQuestionModel extends QuestionModel {
   ];
 }
 
+class LikertQuestionModel extends QuestionModel {
+  final List<String> options;
+  final int minValue;
+  final int maxValue;
+  
+  const LikertQuestionModel({
+    required super.questionNumber,
+    required super.questionContent,
+    this.options = const ['Tidak Pernah', 'Kadang-kadang', 'Sering', 'Sangat Sering'],
+    this.minValue = 0,
+    this.maxValue = 3,
+  });
+  
+  factory LikertQuestionModel.fromJson(Map<String, dynamic> json) {
+    return LikertQuestionModel(
+      questionNumber: json['questionNumber'] as int,
+      questionContent: json['questionContent'] as String,
+      options: json['options'] != null 
+          ? List<String>.from(json['options']) 
+          : ['Tidak Pernah', 'Kadang-kadang', 'Sering', 'Sangat Sering'],
+      minValue: json['minValue'] as int? ?? 0,
+      maxValue: json['maxValue'] as int? ?? 3,
+    );
+  }
+  
+  factory LikertQuestionModel.fromEntity(LikertQuestion question) {
+    return LikertQuestionModel(
+      questionNumber: question.questionNumber,
+      questionContent: question.questionContent,
+      options: question.options,
+      minValue: question.minValue,
+      maxValue: question.maxValue,
+    );
+  }
+  
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'questionNumber': questionNumber,
+      'questionContent': questionContent,
+      'options': options,
+      'minValue': minValue,
+      'maxValue': maxValue,
+    };
+  }
+  
+  @override
+  List<Object?> get props => [
+    questionNumber,
+    questionContent,
+    options,
+    minValue,
+    maxValue,
+  ];
+}
+
 class QuestionListModel {
   final List<QuestionModel> questions;
   
   const QuestionListModel({required this.questions});
   
-  factory QuestionListModel.fromJson(Map<String, dynamic> json, {bool isSlider = false}) {
+  factory QuestionListModel.fromJson(Map<String, dynamic> json, {String questionType = 'yesno'}) {
     final questionsJson = json['quizzes'] as List<dynamic>;
     final questions = questionsJson
         .map((questionJson) => QuestionModel.fromJson(
               questionJson as Map<String, dynamic>,
-              isSlider: isSlider,
+              questionType: questionType,
             ))
         .toList();
     

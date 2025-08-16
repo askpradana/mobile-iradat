@@ -45,3 +45,26 @@ class SliderQuestion extends Question {
     maxLabel,
   ];
 }
+
+class LikertQuestion extends Question {
+  final List<String> options;
+  final int minValue;
+  final int maxValue;
+  
+  const LikertQuestion({
+    required super.questionNumber,
+    required super.questionContent,
+    this.options = const ['Tidak Pernah', 'Kadang-kadang', 'Sering', 'Sangat Sering'],
+    this.minValue = 0,
+    this.maxValue = 3,
+  });
+  
+  @override
+  List<Object?> get props => [
+    questionNumber,
+    questionContent,
+    options,
+    minValue,
+    maxValue,
+  ];
+}

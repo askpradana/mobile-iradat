@@ -5,4 +5,5 @@ class AppConstants {
   static const String quizzesJsonPath = 'lib/data/quizzes.json';
   static const String srq20JsonPath = 'lib/data/srq20.json';
   static const String smfa10JsonPath = 'lib/data/smfa10.json';
+  static const String dass21JsonPath = 'lib/data/dass21.json';
 }

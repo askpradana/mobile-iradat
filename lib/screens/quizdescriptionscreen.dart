@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_iradat/screens/quizquestionscreen.dart';
 import 'package:quiz_iradat/screens/sliderquizpage.dart';
+import 'package:quiz_iradat/screens/dass21quizpage.dart';
 
 class QuizScreen extends StatelessWidget {
   final String quizId;
@@ -133,7 +134,9 @@ class QuizScreen extends StatelessWidget {
                     SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        "Read each question carefully and select the best answer. You can't go back to previous questions.",
+                        quizType == 'likert'
+                            ? "Baca setiap pertanyaan dengan seksama dan pilih jawaban yang paling sesuai dengan kondisi Anda dalam 1 minggu terakhir."
+                            : "Read each question carefully and select the best answer. You can't go back to previous questions.",
                         style: TextStyle(color: Colors.blue[700], fontSize: 14),
                       ),
                     ),
@@ -256,17 +259,22 @@ class QuizScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) =>
-                            quizType == 'slider'
-                                ? SliderQuizPage(
-                                  quizTitle: quizTitle,
-                                  quizId: quizId,
-                                )
-                                : QuizPage(
-                                  quizTitle: quizTitle,
-                                  quizId: quizId,
-                                ),
+                    builder: (context) {
+                      switch (quizType) {
+                        case 'slider':
+                          return SliderQuizPage(
+                            quizTitle: quizTitle,
+                            quizId: quizId,
+                          );
+                        case 'likert':
+                          return Dass21QuizPage(
+                            quizTitle: quizTitle,
+                            quizId: quizId,
+                          );
+                        default:
+                          return QuizPage(quizTitle: quizTitle, quizId: quizId);
+                      }
+                    },
                   ),
                 );
               },

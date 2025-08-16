@@ -53,6 +53,8 @@ class QuizModel extends Quiz {
         return QuizType.yesno;
       case 'slider':
         return QuizType.slider;
+      case 'likert':
+        return QuizType.likert;
       default:
         return QuizType.yesno;
     }
@@ -64,6 +66,8 @@ class QuizModel extends Quiz {
         return 'yesno';
       case QuizType.slider:
         return 'slider';
+      case QuizType.likert:
+        return 'likert';
     }
   }
 }

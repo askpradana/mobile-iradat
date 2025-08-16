@@ -1,0 +1,89 @@
+
+{
+    "quizzes": [
+        {
+            "questionNumber": 1,
+            "questionContent": "Saya merasa sulit untuk tenang."
+        },
+        {
+            "questionNumber": 2,
+            "questionContent": "Saya merasa sangat sedih dan murung."
+        },
+        {
+            "questionNumber": 3,
+            "questionContent": "Saya tidak bisa mengalami perasaan positif sama sekali."
+        },
+        {
+            "questionNumber": 4,
+            "questionContent": "Saya merasa tidak memiliki harapan tentang apa pun."
+        },
+        {
+            "questionNumber": 5,
+            "questionContent": "Saya merasa tidak memiliki energi untuk melakukan apa pun."
+        },
+        {
+            "questionNumber": 6,
+            "questionContent": "Saya merasa tidak berharga."
+        },
+        {
+            "questionNumber": 7,
+            "questionContent": "Saya merasa hidup tidak berarti."
+        },
+        {
+            "questionNumber": 8,
+            "questionContent": "Saya merasa mulut saya kering."
+        },
+        {
+            "questionNumber": 9,
+            "questionContent": "Saya mengalami kesulitan bernapas (misalnya, napas terlalu cepat, terengah-engah)."
+        },
+        {
+            "questionNumber": 10,
+            "questionContent": "Saya merasa ketakutan tanpa alasan yang jelas."
+        },
+        {
+            "questionNumber": 11,
+            "questionContent": "Saya merasa tidak stabil (misalnya, kepala terasa ringan)."
+        },
+        {
+            "questionNumber": 12,
+            "questionContent": "Saya merasa gelisah."
+        },
+        {
+            "questionNumber": 13,
+            "questionContent": "Saya merasa sangat cemas atau khawatir."
+        },
+        {
+            "questionNumber": 14,
+            "questionContent": "Saya merasa panik."
+        },
+        {
+            "questionNumber": 15,
+            "questionContent": "Saya merasa tertekan dan tidak bisa bersantai."
+        },
+        {
+            "questionNumber": 16,
+            "questionContent": "Saya merasa sulit untuk duduk diam."
+        },
+        {
+            "questionNumber": 17,
+            "questionContent": "Saya merasa tidak sabar dengan orang-orang."
+        },
+        {
+            "questionNumber": 18,
+            "questionContent": "Saya merasa kesulitan untuk memulai pekerjaan."
+        },
+        {
+            "questionNumber": 19,
+            "questionContent": "Saya merasa tegang dan mudah tersinggung."
+        },
+        {
+            "questionNumber": 20,
+            "questionContent": "Saya merasa sulit untuk fokus pada apa yang saya lakukan."
+        },
+        {
+            "questionNumber": 21,
+            "questionContent": "Saya merasa reaksi emosional saya berlebihan terhadap situasi."
+        }
+    ]
+}
