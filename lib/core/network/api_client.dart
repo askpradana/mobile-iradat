@@ -16,7 +16,11 @@ class ApiClient {
   Future<Map<String, String>> _getHeaders() async {
     final headers = {'Content-Type': 'application/json'};
 
-    final token = await _secureStorage.read(key: 'accessToken');
+    // Check for anonymous token first, then regular token
+    final anonymousToken = await _secureStorage.read(key: 'anonymousToken');
+    final regularToken = await _secureStorage.read(key: 'accessToken');
+    
+    final token = anonymousToken ?? regularToken;
     if (token != null) {
       headers['Authorization'] = 'Bearer $token';
     }

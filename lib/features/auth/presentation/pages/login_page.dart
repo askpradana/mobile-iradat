@@ -27,6 +27,8 @@ class LoginPage extends StatelessWidget {
                 const SizedBox(height: 32),
                 _buildLoginButton(controller),
                 const SizedBox(height: 16),
+                _buildAnonymousButton(context),
+                const SizedBox(height: 16),
                 _buildRegisterButton(context),
               ],
             ),
@@ -122,6 +124,23 @@ class LoginPage extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
     ));
+  }
+
+  Widget _buildAnonymousButton(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: () => Get.toNamed('/anonymous-code'),
+      icon: const Icon(Icons.key),
+      label: const Text('Sign in with invitation code'),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
   }
 
   Widget _buildRegisterButton(BuildContext context) {
