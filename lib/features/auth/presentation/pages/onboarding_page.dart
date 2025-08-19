@@ -30,46 +30,48 @@ class OnboardingPage extends StatelessWidget {
   }
 
   Widget _buildOnboardingPage(OnboardingItem item) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(
-              color: Get.theme.colorScheme.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+    return Builder(
+      builder: (context) => Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.psychology_outlined,
+                size: 100,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
-            child: const Icon(
-              Icons.psychology_outlined,
-              size: 100,
-              color: Colors.blue,
-            ),
-          ),
-          const SizedBox(height: 48),
-          Text(
-            item.title,
-            style: Get.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Get.theme.colorScheme.onSurface,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Text(
-              item.description,
-              style: Get.textTheme.bodyLarge?.copyWith(
-                color: Get.theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                height: 1.6,
+            const SizedBox(height: 48),
+            Text(
+              item.title,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                item.description,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  height: 1.6,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -94,34 +96,38 @@ class OnboardingPage extends StatelessWidget {
   }
 
   Widget _buildPageIndicator(OnboardingController controller) {
-    return Obx(() => Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        controller.onboardingItems.length,
-        (index) => AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: controller.currentIndex.value == index ? 24 : 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: controller.currentIndex.value == index
-                ? Get.theme.colorScheme.primary
-                : Get.theme.colorScheme.primary.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(4),
+    return Builder(
+      builder: (context) => Obx(() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(
+          controller.onboardingItems.length,
+          (index) => AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            width: controller.currentIndex.value == index ? 24 : 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: controller.currentIndex.value == index
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(4),
+            ),
           ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 
   Widget _buildSkipButton(OnboardingController controller) {
-    return TextButton(
-      onPressed: controller.skipToLogin,
-      child: Text(
-        'Skip',
-        style: TextStyle(
-          color: Get.theme.colorScheme.onSurface.withValues(alpha: 0.6),
-          fontWeight: FontWeight.w500,
+    return Builder(
+      builder: (context) => TextButton(
+        onPressed: controller.skipToLogin,
+        child: Text(
+          'Skip',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

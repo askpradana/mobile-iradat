@@ -7,6 +7,10 @@ class ThemeController extends GetxController {
   final _themeMode = ThemeMode.system.obs;
   ThemeMode get themeMode => _themeMode.value;
 
+  // Initialization state
+  final _isInitialized = false.obs;
+  bool get isInitialized => _isInitialized.value;
+
   // Key for SharedPreferences
   static const String _themeModeKey = 'theme_mode';
 
@@ -28,6 +32,9 @@ class ThemeController extends GetxController {
       }
     } catch (e) {
       debugPrint('Error loading theme mode: $e');
+    } finally {
+      // Mark as initialized regardless of success/failure
+      _isInitialized.value = true;
     }
   }
 

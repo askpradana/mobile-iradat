@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
+import '../../../../core/theme/theme_controller.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -11,28 +12,40 @@ class LoginPage extends StatelessWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: controller.formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildHeader(context),
-                const SizedBox(height: 48),
-                _buildEmailField(controller),
-                const SizedBox(height: 16),
-                _buildPasswordField(controller),
-                const SizedBox(height: 32),
-                _buildLoginButton(controller),
-                const SizedBox(height: 16),
-                _buildAnonymousButton(context),
-                const SizedBox(height: 16),
-                _buildRegisterButton(context),
-              ],
+        child: Stack(
+          children: [
+            // Main form content
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: controller.formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildHeader(context),
+                    const SizedBox(height: 48),
+                    _buildEmailField(controller),
+                    const SizedBox(height: 16),
+                    _buildPasswordField(controller),
+                    const SizedBox(height: 32),
+                    _buildLoginButton(controller),
+                    const SizedBox(height: 16),
+                    _buildAnonymousButton(context),
+                    const SizedBox(height: 16),
+                    _buildRegisterButton(context),
+                  ],
+                ),
+              ),
             ),
-          ),
+            
+            // Theme toggle in top-right corner
+            Positioned(
+              top: 16,
+              right: 16,
+              child: _buildThemeToggle(),
+            ),
+          ],
         ),
       ),
     );
@@ -154,5 +167,31 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildThemeToggle() {
+    final themeController = Get.find<ThemeController>();
+    
+    return Obx(() => Container(
+      decoration: BoxDecoration(
+        color: Theme.of(Get.context!).colorScheme.surface.withValues(alpha: 0.8),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Theme.of(Get.context!).colorScheme.outline.withValues(alpha: 0.2),
+        ),
+      ),
+      child: IconButton(
+        icon: Icon(
+          themeController.isDarkMode 
+            ? Icons.light_mode_outlined 
+            : Icons.dark_mode_outlined,
+          size: 20,
+          color: Theme.of(Get.context!).colorScheme.onSurface.withValues(alpha: 0.8),
+        ),
+        onPressed: themeController.toggleTheme,
+        tooltip: 'Toggle theme',
+        padding: const EdgeInsets.all(8),
+      ),
+    ));
   }
 }

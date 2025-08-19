@@ -13,6 +13,15 @@ void main() async {
     widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
   );
   await dotenv.load(fileName: ".env");
+  
+  // Pre-initialize ThemeController before building any widgets
+  try {
+    Get.put(ThemeController(), permanent: true);
+  } catch (e) {
+    debugPrint('Error initializing ThemeController: $e');
+    // Continue with app startup even if theme initialization fails
+  }
+  
   runApp(MyApp());
 }
 
@@ -21,9 +30,43 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ThemeController>(
-      init: ThemeController(),
+    return GetX<ThemeController>(
       builder: (themeController) {
+        // Show loading screen until theme is initialized
+        if (!themeController.isInitialized) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.quiz,
+                      size: 80,
+                      color: Colors.blue,
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Quiz Iradat',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+                    CircularProgressIndicator(
+                      color: Colors.blue,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           initialBinding: AppBindings(),
