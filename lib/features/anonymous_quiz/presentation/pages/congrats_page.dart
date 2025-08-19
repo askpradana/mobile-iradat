@@ -1,7 +1,96 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/anonymous_quiz_controller.dart';
 import '../../models.dart';
+
+class ConfettiParticle {
+  final double x;
+  final double y;
+  final double velocityX;
+  final double velocityY;
+  final double size;
+  final Color color;
+  final double rotation;
+  final double rotationSpeed;
+  final double gravity;
+
+  ConfettiParticle({
+    required this.x,
+    required this.y,
+    required this.velocityX,
+    required this.velocityY,
+    required this.size,
+    required this.color,
+    required this.rotation,
+    required this.rotationSpeed,
+    required this.gravity,
+  });
+
+  ConfettiParticle copyWith({
+    double? x,
+    double? y,
+    double? velocityX,
+    double? velocityY,
+    double? rotation,
+  }) {
+    return ConfettiParticle(
+      x: x ?? this.x,
+      y: y ?? this.y,
+      velocityX: velocityX ?? this.velocityX,
+      velocityY: velocityY ?? this.velocityY,
+      size: size,
+      color: color,
+      rotation: rotation ?? this.rotation,
+      rotationSpeed: rotationSpeed,
+      gravity: gravity,
+    );
+  }
+}
+
+class ConfettiPainter extends CustomPainter {
+  final List<ConfettiParticle> particles;
+  final double animationValue;
+
+  ConfettiPainter({required this.particles, required this.animationValue});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final particle in particles) {
+      final paint =
+          Paint()
+            ..color = particle.color.withValues(
+              alpha: 1.0 - animationValue * 0.3,
+            )
+            ..style = PaintingStyle.fill;
+
+      canvas.save();
+      canvas.translate(particle.x, particle.y);
+      canvas.rotate(particle.rotation);
+
+      // Draw simple rectangle particle
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset.zero,
+            width: particle.size,
+            height: particle.size * 0.6,
+          ),
+          Radius.circular(particle.size * 0.1),
+        ),
+        paint,
+      );
+
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(ConfettiPainter oldDelegate) {
+    return oldDelegate.animationValue != animationValue ||
+        oldDelegate.particles.length != particles.length;
+  }
+}
 
 class CongratsPage extends StatefulWidget {
   const CongratsPage({super.key});
@@ -15,10 +104,15 @@ class _CongratsPageState extends State<CongratsPage>
   late AnimationController _scaleController;
   late AnimationController _fadeController;
   late AnimationController _slideController;
+  late AnimationController _confettiController;
 
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  late Animation<double> _confettiAnimation;
+
+  List<ConfettiParticle> _particles = [];
+  DateTime? _lastConfettiTap;
 
   @override
   void initState() {
@@ -40,6 +134,11 @@ class _CongratsPageState extends State<CongratsPage>
       vsync: this,
     );
 
+    _confettiController = AnimationController(
+      duration: const Duration(milliseconds: 2500),
+      vsync: this,
+    );
+
     // Initialize animations
     _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _scaleController, curve: Curves.elasticOut),
@@ -56,6 +155,13 @@ class _CongratsPageState extends State<CongratsPage>
       CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
     );
 
+    _confettiAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _confettiController, curve: Curves.easeOut),
+    );
+
+    // Listen to confetti animation for particle updates
+    _confettiController.addListener(_updateParticles);
+
     // Start animations
     _startAnimations();
   }
@@ -69,6 +175,86 @@ class _CongratsPageState extends State<CongratsPage>
 
     await Future.delayed(const Duration(milliseconds: 200));
     _slideController.forward();
+
+    // Start confetti animation after all main animations
+    await Future.delayed(const Duration(milliseconds: 400));
+    _triggerConfetti();
+  }
+
+  void _triggerConfetti() {
+    _generateParticles();
+    _confettiController.reset();
+    _confettiController.forward();
+  }
+
+  void _generateParticles() {
+    final random = Random();
+    final size = MediaQuery.of(context).size;
+    final colors = [
+      Theme.of(context).colorScheme.primary,
+      Theme.of(context).colorScheme.secondary,
+      Colors.green,
+      Colors.orange,
+      Colors.blue,
+      Colors.purple,
+    ];
+
+    _particles = List.generate(35, (index) {
+      return ConfettiParticle(
+        x: size.width * 0.5 + (random.nextDouble() - 0.5) * 100,
+        y: size.height * 0.2,
+        velocityX: (random.nextDouble() - 0.5) * 300,
+        velocityY: -random.nextDouble() * 200 - 100,
+        size: random.nextDouble() * 5 + 3,
+        color: colors[random.nextInt(colors.length)],
+        rotation: random.nextDouble() * 2 * pi,
+        rotationSpeed: (random.nextDouble() - 0.5) * 10,
+        gravity: random.nextDouble() * 200 + 300,
+      );
+    });
+  }
+
+  void _updateParticles() {
+    if (!mounted) return;
+
+    final deltaTime = 0.016; // ~60fps
+    final animationProgress = _confettiAnimation.value;
+
+    setState(() {
+      _particles =
+          _particles
+              .map((particle) {
+                final newVelocityY =
+                    particle.velocityY + particle.gravity * deltaTime;
+                final newX = particle.x + particle.velocityX * deltaTime;
+                final newY = particle.y + newVelocityY * deltaTime;
+                final newRotation =
+                    particle.rotation + particle.rotationSpeed * deltaTime;
+
+                return particle.copyWith(
+                  x: newX,
+                  y: newY,
+                  velocityY: newVelocityY,
+                  rotation: newRotation,
+                );
+              })
+              .where((particle) {
+                final size = MediaQuery.of(context).size;
+                return particle.y < size.height + 50 && animationProgress < 1.0;
+              })
+              .toList();
+    });
+  }
+
+  void _onCheckIconTap() {
+    final now = DateTime.now();
+    if (_lastConfettiTap != null &&
+        now.difference(_lastConfettiTap!) < const Duration(seconds: 3)) {
+      return; // Debounced
+    }
+
+    _lastConfettiTap = now;
+    _triggerConfetti();
   }
 
   @override
@@ -76,6 +262,8 @@ class _CongratsPageState extends State<CongratsPage>
     _scaleController.dispose();
     _fadeController.dispose();
     _slideController.dispose();
+    _confettiController.removeListener(_updateParticles);
+    _confettiController.dispose();
     super.dispose();
   }
 
@@ -86,101 +274,126 @@ class _CongratsPageState extends State<CongratsPage>
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Content section
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Animated success icon
-                    ScaleTransition(
-                      scale: _scaleAnimation,
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: Colors.green.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.green, width: 3),
+                    // Content section
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Animated success icon with tap gesture
+                        ScaleTransition(
+                          scale: _scaleAnimation,
+                          child: GestureDetector(
+                            onTap: _onCheckIconTap,
+                            child: Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                color: Colors.green.withValues(alpha: 0.1),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.green,
+                                  width: 3,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.check_circle,
+                                size: 80,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.check_circle,
-                          size: 80,
-                          color: Colors.green,
+
+                        const SizedBox(height: 32),
+
+                        // Congratulations text
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: Column(
+                            children: [
+                              Text(
+                                'Congratulations!',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.headlineLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              Text(
+                                'Quiz Completed Successfully',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+
+                        const SizedBox(height: 48),
+
+                        // Quiz summary
+                        SlideTransition(
+                          position: _slideAnimation,
+                          child: _buildQuizSummary(context, controller),
+                        ),
+                      ],
                     ),
 
                     const SizedBox(height: 32),
 
-                    // Congratulations text
-                    FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: Column(
-                        children: [
-                          Text(
-                            'Congratulations!',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.headlineLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
-                            ),
-                            textAlign: TextAlign.center,
+                    // Continue button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: controller.goToLogin,
+                        icon: const Icon(Icons.login),
+                        label: const Text('Continue to Login'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimary,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-
-                          const SizedBox(height: 16),
-
-                          Text(
-                            'Quiz Completed Successfully',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-
-                    const SizedBox(height: 48),
-
-                    // Quiz summary
-                    SlideTransition(
-                      position: _slideAnimation,
-                      child: _buildQuizSummary(context, controller),
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 32),
-
-                // Continue button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: controller.goToLogin,
-                    icon: const Icon(Icons.login),
-                    label: const Text('Continue to Login'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+              ),
+            ),
+            // Confetti overlay
+            if (_particles.isNotEmpty)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: CustomPaint(
+                    painter: ConfettiPainter(
+                      particles: _particles,
+                      animationValue: _confettiAnimation.value,
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
+          ],
         ),
       ),
     );

@@ -16,45 +16,52 @@ class AnonymousRepository {
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
-        final validationResponse = ReferralValidationResponse.fromJson(jsonData);
-        
+        final validationResponse = ReferralValidationResponse.fromJson(
+          jsonData,
+        );
+
         if (validationResponse.success) {
           return validationResponse;
         } else {
-          NotificationService.showError('Invalid Code', validationResponse.message);
+          NotificationService.showError(
+            'Invalid Code',
+            validationResponse.message,
+          );
           return null;
         }
       } else {
         final errorData = jsonDecode(response.body);
         NotificationService.showError(
-          'Validation Failed', 
-          errorData['message'] ?? 'Invalid referral code'
+          'Validation Failed',
+          errorData['message'] ?? 'Invalid referral code',
         );
         return null;
       }
     } catch (e) {
       NotificationService.showError(
-        'Network Error', 
-        'Please check your internet connection and try again'
+        'Network Error',
+        'Please check your internet connection and try again',
       );
       return null;
     }
   }
 
   Future<AnonymousRegistrationResponse?> registerAnonymous(
-    String referralCode, 
-    AnonymousRegistrationRequest request
+    String referralCode,
+    AnonymousRegistrationRequest request,
   ) async {
     try {
       final response = await api.post(
-        '/quiz/anonymous/$referralCode/register', 
-        request.toJson()
+        '/quiz/anonymous/$referralCode/register',
+        request.toJson(),
       );
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
-        final registrationResponse = AnonymousRegistrationResponse.fromJson(jsonData);
-        
+        final registrationResponse = AnonymousRegistrationResponse.fromJson(
+          jsonData,
+        );
+
         if (registrationResponse.success) {
           // Store anonymous token and data
           await secureStorage.write(
@@ -69,31 +76,39 @@ class AnonymousRepository {
             key: 'anonymousId',
             value: registrationResponse.data.anonymousId,
           );
-          
-          NotificationService.showSuccess('Welcome!', 'Quiz access granted successfully');
+
+          NotificationService.showSuccess(
+            'Welcome!',
+            'Quiz access granted successfully',
+          );
           return registrationResponse;
         } else {
-          NotificationService.showError('Registration Failed', registrationResponse.message);
+          NotificationService.showError(
+            'Registration Failed',
+            registrationResponse.message,
+          );
           return null;
         }
       } else {
         final errorData = jsonDecode(response.body);
         NotificationService.showError(
-          'Registration Failed', 
-          errorData['message'] ?? 'Registration failed. Please try again.'
+          'Registration Failed',
+          errorData['message'] ?? 'Registration failed. Please try again.',
         );
         return null;
       }
     } catch (e) {
       NotificationService.showError(
-        'Network Error', 
-        'Please check your internet connection and try again'
+        'Network Error',
+        'Please check your internet connection and try again',
       );
       return null;
     }
   }
 
-  Future<QuizSubmissionResponse?> submitQuiz(QuizSubmissionRequest request) async {
+  Future<QuizSubmissionResponse?> submitQuiz(
+    QuizSubmissionRequest request,
+  ) async {
     try {
       final response = await api.post('/quiz/submit', request.toJson());
 
@@ -101,44 +116,44 @@ class AnonymousRepository {
         final jsonData = jsonDecode(response.body);
         try {
           final submissionResponse = QuizSubmissionResponse.fromJson(jsonData);
-          
+
           if (submissionResponse.success) {
             // Clear anonymous token after successful submission
             await _clearAnonymousData();
-            
+
             NotificationService.showSuccess(
-              'Quiz Completed!', 
-              submissionResponse.message
+              'Quiz Completed!',
+              submissionResponse.message,
             );
             return submissionResponse;
           } else {
-            NotificationService.showError('Submission Failed', submissionResponse.message);
+            NotificationService.showError(
+              'Submission Failed',
+              submissionResponse.message,
+            );
             return null;
           }
         } catch (parseError) {
           // JSON parsing error - this helps distinguish from network errors
-          print('ERROR: Quiz submission JSON parsing failed: $parseError');
-          print('Response body: ${response.body}');
           NotificationService.showError(
-            'Data Processing Error', 
-            'Failed to process quiz results. Please try again.'
+            'Data Processing Error',
+            'Failed to process quiz results. Please try again.',
           );
           return null;
         }
       } else {
         final errorData = jsonDecode(response.body);
         NotificationService.showError(
-          'Submission Failed', 
-          errorData['message'] ?? 'Failed to submit quiz. Please try again.'
+          'Submission Failed',
+          errorData['message'] ?? 'Failed to submit quiz. Please try again.',
         );
         return null;
       }
     } catch (e) {
       // Network or other connectivity errors
-      print('ERROR: Quiz submission network error: $e');
       NotificationService.showError(
-        'Network Error', 
-        'Please check your internet connection and try again'
+        'Network Error',
+        'Please check your internet connection and try again',
       );
       return null;
     }
@@ -148,7 +163,7 @@ class AnonymousRepository {
     try {
       final token = await secureStorage.read(key: 'anonymousToken');
       final expiresAt = await secureStorage.read(key: 'anonymousExpiresAt');
-      
+
       if (token != null && expiresAt != null) {
         final expiry = DateTime.parse(expiresAt);
         return DateTime.now().isBefore(expiry);
@@ -187,6 +202,9 @@ class AnonymousRepository {
 
   Future<void> clearAnonymousSession() async {
     await _clearAnonymousData();
-    NotificationService.showInfo('Session Cleared', 'Anonymous session has been cleared');
+    NotificationService.showInfo(
+      'Session Cleared',
+      'Anonymous session has been cleared',
+    );
   }
 }
